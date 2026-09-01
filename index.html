@@ -1,0 +1,1219 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Turma virtual para disciplinas introdutorias de programacao em C. Explica ao aluno a causa do erro e entrega ao professor a turma agrupada por dificuldade.">
+<meta name="theme-color" content="#7c3aed">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Analytics CS1 - errar e entender por que">
+<meta property="og:description" content="O corretor da disciplina devolve nao passou nos testes. Nos devolvemos a causa do erro, o que fazer para corrigir e a turma inteira agrupada por dificuldade.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%2232%22%20y2%3D%2232%22%20gradientUnits%3D%22userSpaceOnUse%22%3E%3Cstop%20stop-color%3D%22%238b5cf6%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%236d28d9%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%2232%22%20height%3D%2232%22%20rx%3D%228%22%20fill%3D%22url%28%23g%29%22%2F%3E%3Cg%20fill%3D%22%23fff%22%3E%3Crect%20x%3D%227%22%20y%3D%2217%22%20width%3D%224.2%22%20height%3D%229%22%20rx%3D%222.1%22%2F%3E%3Crect%20x%3D%2213.9%22%20y%3D%2212%22%20width%3D%224.2%22%20height%3D%2214%22%20rx%3D%222.1%22%2F%3E%3Crect%20x%3D%2220.8%22%20y%3D%227%22%20width%3D%224.2%22%20height%3D%2219%22%20rx%3D%222.1%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E">
+<script>
+  // Aplica o tema salvo antes da primeira pintura, para nao piscar.
+  try {
+    var t = localStorage.getItem('analytics-cs1:tema');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+</script>
+<style>
+  :root{color-scheme:light dark}
+  *{box-sizing:border-box}
+  body{margin:0}
+  img{max-width:100%}
+  [hidden]{display:none !important}
+</style>
+<title>Analytics CS1</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{
+  --ground:#f5f3f8; --surface:#ffffff; --surface-2:#faf9fc;
+  --line:#e6e1ee; --line-strong:#d2cbe0;
+  --ink:#17131f; --ink-2:#56506a; --ink-3:#8a8399;
+  --accent:#7c3aed; --accent-deep:#5b21b6; --accent-soft:#f1ecfe; --accent-line:#ddd0fb;
+  --fail:#bd3a2f; --fail-soft:#fdeceb; --fail-line:#f5d2ce;
+  --ok:#15803d; --ok-soft:#e9f7ee; --ok-line:#c6e8d2;
+  --info:#1d4ed8; --info-soft:#eaf0fe; --info-line:#cfdcfb;
+  --code-bg:#191524; --code-ink:#e8e3f2; --code-dim:#7d7594;
+  --on-accent:#ffffff;
+  --shadow:0 1px 2px rgba(23,19,31,.04), 0 12px 32px -16px rgba(23,19,31,.16);
+  --radius:14px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#100f16; --surface:#1a1725; --surface-2:#211d2e;
+    --line:#2f2a3f; --line-strong:#413a56;
+    --ink:#f3eff9; --ink-2:#b5accb; --ink-3:#8b82a1;
+    --accent:#a78bfa; --accent-deep:#c9b8fe; --accent-soft:#261d3d; --accent-line:#3d2f63;
+    --fail:#f0928a; --fail-soft:#301a1c; --fail-line:#4d2a2a;
+    --ok:#6fdc9d; --ok-soft:#122a1e; --ok-line:#20452f;
+    --info:#9ab8ff; --info-soft:#161f38; --info-line:#27365e;
+    --code-bg:#0c0b12; --code-ink:#e8e3f2; --code-dim:#7d7594;
+    --on-accent:#14101f;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 14px 34px -18px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#100f16; --surface:#1a1725; --surface-2:#211d2e;
+  --line:#2f2a3f; --line-strong:#413a56;
+  --ink:#f3eff9; --ink-2:#b5accb; --ink-3:#8b82a1;
+  --accent:#a78bfa; --accent-deep:#c9b8fe; --accent-soft:#261d3d; --accent-line:#3d2f63;
+  --fail:#f0928a; --fail-soft:#301a1c; --fail-line:#4d2a2a;
+  --ok:#6fdc9d; --ok-soft:#122a1e; --ok-line:#20452f;
+  --info:#9ab8ff; --info-soft:#161f38; --info-line:#27365e;
+  --code-bg:#0c0b12; --code-ink:#e8e3f2; --code-dim:#7d7594;
+  --on-accent:#14101f;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 14px 34px -18px rgba(0,0,0,.7);
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--ground); color:var(--ink);
+  font-family:"IBM Plex Sans", system-ui, "Segoe UI", sans-serif;
+  font-size:16px; line-height:1.6; -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:"Bricolage Grotesque","IBM Plex Sans",system-ui,sans-serif; text-wrap:balance; margin:0; letter-spacing:-.02em; line-height:1.08}
+p{margin:0}
+a{color:inherit}
+img,svg{max-width:100%}
+:focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:6px}
+@media (prefers-reduced-motion: reduce){*{animation:none !important; transition:none !important}}
+
+.wrap{width:min(1080px,92vw); margin-inline:auto}
+.band{padding:clamp(56px,8vw,104px) 0}
+.band--tint{background:var(--surface-2); border-block:1px solid var(--line)}
+.eyebrow{
+  font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:12px; letter-spacing:.06em;
+  color:var(--accent); margin:0 0 14px; font-weight:500;
+}
+.eyebrow span{color:var(--ink-3)}
+.lede{color:var(--ink-2); font-size:17px; max-width:62ch; margin-top:14px}
+.section-h{font-size:clamp(28px,3.6vw,40px); font-weight:600}
+.note{font-size:13px; color:var(--ink-3); line-height:1.5}
+.stack{display:flex; flex-direction:column}
+
+/* ---------- nav ---------- */
+.nav{
+  position:sticky; top:0; z-index:20; background:color-mix(in srgb, var(--ground) 88%, transparent);
+  backdrop-filter:blur(10px); border-bottom:1px solid var(--line);
+}
+.nav-in{display:flex; align-items:center; justify-content:space-between; gap:16px; height:60px}
+.brand{display:flex; align-items:center; gap:10px; text-decoration:none; font-weight:600; letter-spacing:-.01em}
+.nav-links{display:flex; gap:22px; font-size:14px; color:var(--ink-2)}
+.nav-links a{text-decoration:none}
+.nav-links a:hover{color:var(--accent)}
+@media (max-width:820px){.nav-links{display:none}}
+
+.btn{
+  display:inline-flex; align-items:center; gap:8px; border:1px solid transparent; cursor:pointer;
+  font:inherit; font-size:14px; font-weight:500; padding:10px 18px; border-radius:11px; text-decoration:none;
+  background:var(--accent); color:var(--on-accent); transition:filter .15s ease, transform .15s ease;
+}
+.btn:hover{filter:brightness(1.08)}
+.btn:active{transform:translateY(1px)}
+.btn--ghost{background:transparent; color:var(--ink); border-color:var(--line-strong)}
+.btn--ghost:hover{border-color:var(--accent); color:var(--accent); filter:none}
+.btn--lg{padding:13px 24px; font-size:15px}
+
+/* ---------- hero ---------- */
+.hero{padding:clamp(48px,7vw,88px) 0 clamp(40px,5vw,64px)}
+.hero h1{font-size:clamp(40px,6.4vw,72px); font-weight:700}
+.hero h1 em{font-style:normal; color:var(--accent)}
+.hero-sub{font-size:clamp(17px,1.6vw,20px); color:var(--ink-2); max-width:56ch; margin-top:20px; line-height:1.5}
+.hero-cta{display:flex; flex-wrap:wrap; gap:12px; margin-top:28px; align-items:center}
+.hero-meta{font-size:13px; color:var(--ink-3); margin-top:14px}
+
+.split{display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:clamp(36px,5vw,56px); align-items:start}
+@media (max-width:860px){.split{grid-template-columns:1fr}}
+.panel{
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+  box-shadow:var(--shadow); overflow:hidden;
+}
+.panel-h{
+  display:flex; align-items:center; gap:8px; padding:11px 16px; border-bottom:1px solid var(--line);
+  font-family:"IBM Plex Mono",monospace; font-size:11.5px; letter-spacing:.04em; color:var(--ink-3);
+}
+.dot{width:8px; height:8px; border-radius:50%; flex:none}
+.panel-b{padding:18px}
+.term{
+  background:var(--code-bg); color:var(--code-ink); font-family:"IBM Plex Mono",monospace;
+  font-size:12.5px; line-height:1.75; padding:16px; border-radius:10px; overflow-x:auto; white-space:pre;
+}
+.term .c-dim{color:var(--code-dim)}
+.term .c-fail{color:#ff8b7e}
+.term .c-ok{color:#7ee0a5}
+.term .c-key{color:#c4a8ff}
+
+.badge{
+  display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:500;
+  padding:3px 10px; border-radius:999px; border:1px solid;
+}
+.badge--fail{background:var(--fail-soft); color:var(--fail); border-color:var(--fail-line)}
+.badge--ok{background:var(--ok-soft); color:var(--ok); border-color:var(--ok-line)}
+.badge--accent{background:var(--accent-soft); color:var(--accent-deep); border-color:var(--accent-line)}
+.badge--mute{background:var(--surface-2); color:var(--ink-3); border-color:var(--line)}
+
+.callout{border-radius:10px; padding:12px 14px; border:1px solid; margin-top:14px}
+.callout--info{background:var(--info-soft); border-color:var(--info-line)}
+.callout--accent{background:var(--accent-soft); border-color:var(--accent-line)}
+.callout-t{font-size:11.5px; font-weight:600; letter-spacing:.03em; margin-bottom:4px}
+.callout--info .callout-t{color:var(--info)}
+.callout--accent .callout-t{color:var(--accent)}
+.callout-b{font-size:13.5px; color:var(--ink-2); line-height:1.55}
+
+/* ---------- stats ---------- */
+.stats{display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden}
+@media (max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}}
+.stat{background:var(--surface); padding:22px 20px}
+.stat-v{font-family:"Bricolage Grotesque",sans-serif; font-size:clamp(30px,3.4vw,40px); font-weight:700; letter-spacing:-.03em; font-variant-numeric:tabular-nums; line-height:1}
+.stat-l{font-size:13px; color:var(--ink-2); margin-top:8px; line-height:1.4}
+</style>
+<style>
+/* ---------- figuras / infográficos ---------- */
+.figure{margin:0}
+.figure svg{display:block; width:100%; height:auto; color:var(--ink-2)}
+.figure figcaption{font-size:13px; color:var(--ink-3); margin-top:14px; max-width:70ch; line-height:1.55}
+.figbox{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:clamp(18px,3vw,30px); box-shadow:var(--shadow); overflow-x:auto}
+
+.grid-2{display:grid; grid-template-columns:1fr 1fr; gap:20px}
+.grid-3{display:grid; grid-template-columns:repeat(3,1fr); gap:16px}
+@media (max-width:900px){.grid-2,.grid-3{grid-template-columns:1fr}}
+
+.card{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:22px}
+.card h3{font-size:18px; font-weight:600; margin-bottom:8px}
+.card p{font-size:14.5px; color:var(--ink-2); line-height:1.55}
+
+/* barras de dados (entrevistas) */
+.bars{display:flex; flex-direction:column; gap:14px; margin-top:6px}
+.bar-row{display:grid; grid-template-columns:1fr 62px; align-items:center; gap:14px}
+.bar-lab{font-size:14px; color:var(--ink); line-height:1.35}
+.bar-track{height:10px; background:var(--surface-2); border:1px solid var(--line); border-radius:999px; margin-top:7px; overflow:hidden}
+.bar-fill{height:100%; background:var(--accent); border-radius:999px; display:block}
+.bar-fill--mute{background:var(--line-strong)}
+.bar-val{font-family:"IBM Plex Mono",monospace; font-size:13px; color:var(--ink-2); text-align:right; font-variant-numeric:tabular-nums}
+
+/* ---------- mockups do produto ---------- */
+.tabs{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:18px}
+.tab{
+  font:inherit; font-size:13.5px; cursor:pointer; padding:8px 15px; border-radius:999px;
+  border:1px solid var(--line); background:var(--surface); color:var(--ink-2);
+}
+.tab:hover{border-color:var(--accent-line); color:var(--accent)}
+.tab[aria-selected="true"]{background:var(--accent-soft); border-color:var(--accent-line); color:var(--accent); font-weight:500}
+
+.frame{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden}
+.frame-bar{display:flex; align-items:center; gap:8px; padding:10px 14px; background:var(--surface-2); border-bottom:1px solid var(--line)}
+.frame-url{
+  font-family:"IBM Plex Mono",monospace; font-size:11.5px; color:var(--ink-3);
+  background:var(--surface); border:1px solid var(--line); border-radius:7px; padding:3px 10px; flex:1; min-width:0;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.screen{padding:clamp(14px,2.4vw,22px); background:var(--surface-2); display:flex; flex-direction:column; gap:12px}
+.ui-nav{display:flex; align-items:center; gap:12px; padding:9px 12px; background:var(--surface); border:1px solid var(--line); border-radius:10px}
+.ui-nav b{font-size:13px; font-weight:600}
+.ui-nav .ui-link{font-size:12.5px; color:var(--ink-3)}
+.ui-nav .ui-link.on{color:var(--accent); background:var(--accent-soft); padding:3px 9px; border-radius:7px}
+.ui-card{background:var(--surface); border:1px solid var(--line); border-radius:11px; padding:15px}
+.ui-h{font-size:14.5px; font-weight:600; margin-bottom:3px}
+.ui-sub{font-size:12.5px; color:var(--ink-3)}
+.ui-body{font-size:13px; color:var(--ink-2); line-height:1.55}
+.ui-label{font-size:11px; font-weight:500; color:var(--ink-3); letter-spacing:.04em; margin-bottom:6px}
+.ui-code{background:var(--code-bg); color:var(--code-ink); font-family:"IBM Plex Mono",monospace; font-size:11.5px; line-height:1.7; border-radius:8px; padding:12px; overflow-x:auto; white-space:pre}
+.ui-code .hl{background:rgba(240,146,138,.16); display:inline-block; width:100%; border-left:2px solid var(--fail); padding-left:6px; margin-left:-8px}
+.ui-btn{display:block; width:100%; text-align:center; background:var(--accent); color:var(--on-accent); font-size:13px; font-weight:500; padding:10px; border-radius:10px; margin-top:12px}
+.ui-kpis{display:grid; grid-template-columns:repeat(4,1fr); gap:10px}
+@media (max-width:700px){.ui-kpis{grid-template-columns:repeat(2,1fr)}}
+.ui-kpi{background:var(--surface); border:1px solid var(--line); border-radius:11px; padding:13px}
+.ui-kpi .k-l{font-size:10px; letter-spacing:.05em; color:var(--ink-3); text-transform:uppercase}
+.ui-kpi .k-v{font-family:"Bricolage Grotesque",sans-serif; font-size:22px; font-weight:700; margin-top:3px; font-variant-numeric:tabular-nums}
+.ui-kpi .k-s{font-size:11px; color:var(--ink-3); margin-top:2px; line-height:1.35}
+.ui-row{display:flex; align-items:center; gap:8px; flex-wrap:wrap}
+.ui-spread{margin-left:auto; font-size:11.5px; color:var(--ink-3)}
+.ui-test{border:1px solid; border-radius:9px; padding:9px 12px; font-family:"IBM Plex Mono",monospace; font-size:11.5px; display:flex; gap:16px; flex-wrap:wrap}
+.ui-test--ok{background:var(--ok-soft); border-color:var(--ok-line); color:var(--ok)}
+.ui-test--fail{background:var(--fail-soft); border-color:var(--fail-line); color:var(--fail)}
+.ui-test span{color:var(--ink-3)}
+.ui-mini-bars{display:flex; align-items:flex-end; gap:6px; height:56px; margin-top:10px}
+.ui-mini-bars i{flex:1; background:var(--accent-soft); border:1px solid var(--accent-line); border-radius:4px 4px 0 0; display:block}
+.chip{font-family:"IBM Plex Mono",monospace; font-size:11px; background:var(--surface-2); border:1px solid var(--line); color:var(--ink-3); padding:2px 7px; border-radius:6px}
+
+/* ---------- campo de pontos (539 → 138) ---------- */
+.dots{display:grid; grid-template-columns:repeat(28,1fr); gap:3px}
+.dots i{aspect-ratio:1; border-radius:2px; background:var(--line-strong); display:block}
+.dots i.rep{background:var(--accent)}
+.dots i.hid{background:var(--line); opacity:.45}
+.dg-head{display:flex; align-items:baseline; gap:10px; margin-bottom:12px}
+.dg-head b{font-size:14px; font-weight:600}
+.dg-head span{font-size:12.5px; color:var(--ink-3)}
+
+/* ---------- calculadora ---------- */
+.calc{display:grid; grid-template-columns:minmax(0,300px) 1fr; gap:clamp(20px,3vw,36px)}
+@media (max-width:860px){.calc{grid-template-columns:1fr}}
+.field{margin-bottom:20px}
+.field-h{display:flex; justify-content:space-between; align-items:baseline; font-size:13.5px; margin-bottom:8px}
+.field-h b{font-weight:500}
+.field-h output{font-family:"IBM Plex Mono",monospace; color:var(--accent); font-weight:500; font-variant-numeric:tabular-nums}
+input[type=range]{width:100%; accent-color:var(--accent); cursor:pointer}
+.result{display:flex; flex-direction:column; gap:16px}
+.res-row{display:grid; grid-template-columns:150px 1fr; gap:14px; align-items:center}
+@media (max-width:560px){.res-row{grid-template-columns:1fr}}
+.res-lab{font-size:13.5px; color:var(--ink-2)}
+.res-bar{height:34px; border-radius:8px; display:flex; align-items:center; padding:0 12px; font-family:"IBM Plex Mono",monospace; font-size:13px; font-weight:500; color:#fff; min-width:fit-content; white-space:nowrap; transition:width .3s ease}
+.res-bar--now{background:var(--line-strong); color:var(--ink)}
+.res-bar--new{background:var(--accent); color:var(--on-accent)}
+.saving{background:var(--accent-soft); border:1px solid var(--accent-line); border-radius:11px; padding:16px 18px}
+.saving b{font-family:"Bricolage Grotesque",sans-serif; font-size:26px; font-weight:700; color:var(--accent); display:block; letter-spacing:-.02em}
+
+/* ---------- comparativo ---------- */
+.cmp-wrap{overflow-x:auto; border:1px solid var(--line); border-radius:var(--radius); background:var(--surface)}
+table.cmp{border-collapse:collapse; width:100%; min-width:720px; font-size:14px}
+table.cmp th, table.cmp td{padding:14px 16px; text-align:left; border-bottom:1px solid var(--line)}
+table.cmp thead th{font-size:12.5px; font-weight:500; color:var(--ink-3); background:var(--surface-2); white-space:nowrap}
+table.cmp thead th.us{color:var(--accent); font-weight:600}
+table.cmp td.us{background:var(--accent-soft)}
+table.cmp tbody th{font-weight:500; color:var(--ink); font-size:14px}
+table.cmp tr:last-child th, table.cmp tr:last-child td{border-bottom:0}
+.mk{font-size:15px; line-height:1}
+.mk--y{color:var(--ok)} .mk--n{color:var(--ink-3)} .mk--p{color:var(--accent)}
+
+/* ---------- depoimentos ---------- */
+.quotes{display:grid; grid-template-columns:repeat(3,1fr); gap:16px}
+@media (max-width:900px){.quotes{grid-template-columns:1fr}}
+.quote{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:24px; display:flex; flex-direction:column; gap:14px}
+.quote blockquote{margin:0; font-family:"Bricolage Grotesque",sans-serif; font-size:18px; line-height:1.35; font-weight:500; letter-spacing:-.01em}
+.quote cite{font-style:normal; font-size:12.5px; color:var(--ink-3); margin-top:auto}
+.quote cite b{display:block; color:var(--ink); font-weight:600; font-size:13.5px; font-style:normal}
+
+/* ---------- formulário ---------- */
+.cta-box{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:clamp(24px,4vw,40px); box-shadow:var(--shadow)}
+.form-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:22px}
+@media (max-width:640px){.form-grid{grid-template-columns:1fr}}
+.form-field{display:flex; flex-direction:column; gap:6px}
+.form-field.wide{grid-column:1 / -1}
+.form-field label{font-size:12.5px; color:var(--ink-2); font-weight:500}
+.form-field input, .form-field select{
+  font:inherit; font-size:14.5px; padding:11px 13px; border-radius:10px;
+  border:1px solid var(--line-strong); background:var(--surface-2); color:var(--ink);
+}
+.form-field input:focus, .form-field select:focus{outline:2px solid var(--accent); outline-offset:1px; border-color:transparent}
+.form-msg{font-size:13.5px; margin-top:14px; min-height:20px}
+.form-msg.ok{color:var(--ok)} .form-msg.err{color:var(--fail)}
+.counter{font-family:"IBM Plex Mono",monospace; font-size:12.5px; color:var(--ink-3); margin-top:10px}
+
+footer{border-top:1px solid var(--line); padding:36px 0 56px; font-size:13px; color:var(--ink-3)}
+footer a{color:var(--ink-2)}
+.foot-in{display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap; align-items:center}
+</style>
+<style>
+  .nav-acoes{display:flex; align-items:center; gap:10px}
+  .tema{
+    display:inline-flex; align-items:center; justify-content:center; width:36px; height:36px;
+    border:1px solid var(--line-strong); border-radius:10px; background:var(--surface);
+    color:var(--ink-2); cursor:pointer; padding:0; transition:color .15s ease, border-color .15s ease;
+  }
+  .tema:hover{color:var(--accent); border-color:var(--accent)}
+</style>
+</head>
+<body>
+<header class="nav">
+  <div class="wrap nav-in">
+    <a class="brand" href="#topo">
+      <svg width="26" height="26" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#8b5cf6"/><stop offset="1" stop-color="#6d28d9"/></linearGradient></defs>
+        <rect width="32" height="32" rx="8" fill="url(#lg)"/>
+        <g fill="#fff"><rect x="7" y="17" width="4.2" height="9" rx="2.1"/><rect x="13.9" y="12" width="4.2" height="14" rx="2.1"/><rect x="20.8" y="7" width="4.2" height="19" rx="2.1"/></g>
+        <polyline points="9.1,14 16,9 22.9,4.5" fill="none" stroke="#fff" stroke-opacity="0.5" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+        <g fill="#fff" fill-opacity="0.9"><circle cx="9.1" cy="14" r="1.5"/><circle cx="16" cy="9" r="1.5"/><circle cx="22.9" cy="4.5" r="1.5"/></g>
+      </svg>
+      Analytics CS1
+    </a>
+    <nav class="nav-links" aria-label="Seções">
+      <a href="#problema">O problema</a>
+      <a href="#motor">Como funciona</a>
+      <a href="#diagnostico">Diagnóstico ao vivo</a>
+      <a href="#professor">Para o professor</a>
+      <a href="#calculadora">Calculadora</a>
+    </nav>
+    <div class="nav-acoes">
+      <button class="tema" id="tema" type="button" aria-label="Alternar entre tema claro e escuro" title="Alternar tema">
+        <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.4" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M8 1.6 A6.4 6.4 0 0 1 8 14.4 Z" fill="currentColor"/></svg>
+      </button>
+      <a class="btn" href="#cadastro">Entrar no piloto</a>
+    </div>
+  </div>
+</header>
+
+<main id="topo">
+
+<section class="wrap hero">
+  <p class="eyebrow">// turma virtual para disciplinas de programação em C</p>
+  <h1>Errar e<br>entender <em>por quê</em>.</h1>
+  <p class="hero-sub">O corretor da disciplina devolve “não passou nos testes”. Nós devolvemos a causa do erro, o que fazer para corrigir e, do outro lado, a turma inteira agrupada por dificuldade.</p>
+  <div class="hero-cta">
+    <a class="btn btn--lg" href="#cadastro">Entrar na lista do piloto</a>
+    <a class="btn btn--ghost btn--lg" href="#diagnostico">Ver um diagnóstico real</a>
+  </div>
+  <p class="hero-meta">Gratuito na fase de piloto · roda no navegador, sem instalar compilador, IDE ou container</p>
+
+  <div class="split">
+    <article class="panel">
+      <div class="panel-h"><span class="dot" style="background:var(--fail)"></span> o que o aluno recebe hoje</div>
+      <div class="panel-b">
+<div class="term"><span class="c-dim">aluno@cs1:~$</span> ./soma &lt; teste_02.in
+<span class="c-dim">14</span>
+
+<span class="c-dim">─── corretor da disciplina ───────────</span>
+Testes    <span class="c-fail">1/3</span>
+Resultado <span class="c-fail">incorreto</span></div>
+        <p class="ui-body" style="margin-top:14px">É tudo o que ele diz. O aluno não sabe se errou a lógica, a sintaxe ou o limite de um laço, então tenta variações quase aleatórias até colar o erro em um assistente de IA.</p>
+      </div>
+    </article>
+
+    <article class="panel">
+      <div class="panel-h"><span class="dot" style="background:var(--accent)"></span> o que o Analytics CS1 devolve</div>
+      <div class="panel-b">
+        <div class="ui-row" style="margin-bottom:10px">
+          <span class="badge badge--fail">Acesso Fora dos Limites: Off-by-One</span>
+          <span class="ui-spread">tentativa 2 · há 4 segundos</span>
+        </div>
+        <p class="ui-body">O laço usa <code>&lt;=</code> como limite e indexa um vetor com a variável <code>i</code>. Em C os índices válidos vão de 0 a tamanho−1, então <code>&lt;=</code> costuma acessar uma posição além do fim do vetor.</p>
+        <div class="callout callout--info">
+          <p class="callout-t">O QUE FAZER</p>
+          <p class="callout-b">Troque <code>&lt;=</code> por <code>&lt;</code> na condição do laço, ou aumente o tamanho do vetor declarado.</p>
+        </div>
+        <div class="callout callout--accent">
+          <p class="callout-t">O ERRO TEM NOME</p>
+          <p class="callout-b">A mesma categoria vai para o seu painel de erros recorrentes e para o mapa da turma que o professor enxerga.</p>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section class="wrap" style="padding-bottom:clamp(40px,6vw,72px)">
+  <div class="stats">
+    <div class="stat"><p class="stat-v">539</p><p class="stat-l">submissões reais de 4 turmas corrigidas pelo motor</p></div>
+    <div class="stat"><p class="stat-v">99,6%</p><p class="stat-l">de concordância com o corretor consolidado da disciplina</p></div>
+    <div class="stat"><p class="stat-v">3,9×</p><p class="stat-l">menos itens para o professor revisar, por agrupamento</p></div>
+    <div class="stat"><p class="stat-v">27</p><p class="stat-l">categorias pedagógicas de erro, auditáveis até a regra</p></div>
+  </div>
+  <p class="note" style="margin-top:14px">Números medidos na validação do motor contra 539 submissões reais de C, comparadas ao corretor já usado na disciplina. Não são projeções.</p>
+</section>
+
+<section id="problema" class="band band--tint">
+  <div class="wrap">
+    <p class="eyebrow">// o problema <span>— o que acontece hoje, às duas da manhã</span></p>
+    <h2 class="section-h">O aluno não trava no conteúdo.<br>Ele trava no “errado” sem explicação.</h2>
+    <p class="lede">Ouvimos cinco alunos de disciplina introdutória de programação, um por um, no roteiro de Descoberta do Cliente. A mesma cena apareceu nas cinco conversas.</p>
+
+    <div class="figbox" style="margin-top:32px">
+      <figure class="figure">
+        <svg viewBox="0 0 890 190" role="img" aria-label="Ciclo em que o aluno submete o código, recebe apenas 'não passou', tenta variações no escuro, cola o erro em um assistente de IA, entrega sem entender e reencontra o mesmo erro na prova.">
+          <defs>
+            <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+            </marker>
+            <marker id="arf" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="var(--fail)"/>
+            </marker>
+          </defs>
+          <g fill="none" stroke="currentColor" stroke-opacity=".3">
+            <rect x="20" y="30" width="150" height="76" rx="10"/>
+            <rect x="195" y="30" width="150" height="76" rx="10"/>
+            <rect x="370" y="30" width="150" height="76" rx="10"/>
+            <rect x="545" y="30" width="150" height="76" rx="10"/>
+            <rect x="720" y="30" width="150" height="76" rx="10"/>
+          </g>
+          <g font-family="IBM Plex Sans, sans-serif" font-size="12.5" fill="currentColor" text-anchor="middle">
+            <text x="95" y="62">Submete o código</text>
+            <text x="270" y="62">&#8220;não passou&#8221;</text>
+            <text x="445" y="62">Tenta no escuro</text>
+            <text x="620" y="62">Cola o erro na IA</text>
+            <text x="795" y="62">Entrega sem entender</text>
+          </g>
+          <g font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--accent)" text-anchor="middle">
+            <text x="95" y="84">madrugada, sozinho</text>
+            <text x="270" y="84">nenhuma causa</text>
+            <text x="445" y="84">30 min a 1 h</text>
+            <text x="620" y="84">4 de 5 alunos</text>
+            <text x="795" y="84">2 de 5 entregaram</text>
+          </g>
+          <g stroke="currentColor" stroke-width="1.4" marker-end="url(#ar)">
+            <line x1="172" y1="68" x2="188" y2="68"/>
+            <line x1="347" y1="68" x2="363" y2="68"/>
+            <line x1="522" y1="68" x2="538" y2="68"/>
+            <line x1="697" y1="68" x2="713" y2="68"/>
+          </g>
+          <path d="M795 106 L795 150 L270 150 L270 110" fill="none" stroke="var(--fail)" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#arf)"/>
+          <text x="532" y="142" font-family="IBM Plex Mono, monospace" font-size="11" fill="var(--fail)" text-anchor="middle">o mesmo erro reaparece na prova</text>
+        </svg>
+        <figcaption>O ciclo se fecha porque nada nele nomeia a causa. Cinco de cinco entrevistados citaram o assistente de IA sem serem perguntados, e quatro disseram que é a primeira coisa que fazem quando o código não passa. Ninguém citou o corretor da disciplina.</figcaption>
+      </figure>
+    </div>
+
+    <div class="grid-2" style="margin-top:24px">
+      <div class="card">
+        <h3>O que eles marcaram como problema seu</h3>
+        <p style="margin-bottom:18px">Dos quatro problemas apresentados na entrevista, quantos dos cinco alunos disseram “isso acontece comigo”.</p>
+        <div class="bars">
+          <div class="bar-row">
+            <div><p class="bar-lab">Não entende por que o código falhou</p><span class="bar-track"><i class="bar-fill" style="width:100%"></i></span></div>
+            <p class="bar-val">5 de 5</p>
+          </div>
+          <div class="bar-row">
+            <div><p class="bar-lab">Não sabe o que treinar</p><span class="bar-track"><i class="bar-fill" style="width:80%"></i></span></div>
+            <p class="bar-val">4 de 5</p>
+          </div>
+          <div class="bar-row">
+            <div><p class="bar-lab">A dificuldade da turma só aparece depois da prova</p><span class="bar-track"><i class="bar-fill" style="width:60%"></i></span></div>
+            <p class="bar-val">3 de 5</p>
+          </div>
+          <div class="bar-row">
+            <div><p class="bar-lab">O professor não dá retorno individual</p><span class="bar-track"><i class="bar-fill bar-fill--mute" style="width:1.5%"></i></span></div>
+            <p class="bar-val">0 de 5</p>
+          </div>
+        </div>
+        <p class="note" style="margin-top:16px">Amostra de 5 entrevistas com alunos, agosto de 2026. O último é problema do professor, e era esperado que nenhum aluno o marcasse.</p>
+      </div>
+
+      <div class="card">
+        <h3>O que isso custa</h3>
+        <p>O custo do problema não é o tempo perdido na questão. É a entrega que não sai e a matéria que se abandona.</p>
+        <div class="stack" style="gap:14px; margin-top:20px">
+          <div class="ui-card"><p class="ui-h">5 de 5 já deixaram de entregar</p><p class="ui-sub">uma lista ou trabalho por causa de um erro que não saía</p></div>
+          <div class="ui-card"><p class="ui-h">5 de 5 já pensaram em trancar</p><p class="ui-sub">e um deles trancou de fato a disciplina</p></div>
+          <div class="ui-card"><p class="ui-h">4 de 5 estudam sozinhos, à noite</p><p class="ui-sub">no horário em que não existe monitor nem professor para perguntar</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="proposta" class="band">
+  <div class="wrap">
+    <p class="eyebrow">// proposta de valor</p>
+    <h2 class="section-h" style="max-width:22ch">O corretor que ensina.</h2>
+    <p class="lede" style="font-size:19px; color:var(--ink)">A turma virtual de CS1 que explica ao aluno a causa do erro, em vez de apenas dizer que o código não passou, e entrega ao professor a turma inteira agrupada por dificuldade. O aluno chega ao acerto com menos tentativas e o professor revisa <b>3,9 vezes menos itens</b>, o que custa menos que ampliar o quadro de monitoria.</p>
+
+    <div class="grid-3" style="margin-top:36px">
+      <div class="card">
+        <span class="badge badge--accent">Para o aluno</span>
+        <h3 style="margin-top:14px">O erro passa a ter nome</h3>
+        <p>Cada envio volta com a categoria do erro, a causa e o que fazer. O modo treino não limita tentativas, o histórico guarda todos os envios e o painel mostra o padrão que você repete sem perceber.</p>
+      </div>
+      <div class="card">
+        <span class="badge badge--accent">Para o professor</span>
+        <h3 style="margin-top:14px">Uma intervenção por dificuldade</h3>
+        <p>Envie o arquivo da prova e receba as questões e os casos de teste prontos. As submissões chegam agrupadas por assinatura de falha: você lê um código representativo e responde ao grupo inteiro de uma vez.</p>
+      </div>
+      <div class="card">
+        <span class="badge badge--accent">Para a coordenação</span>
+        <h3 style="margin-top:14px">Evidência antes da reprovação</h3>
+        <p>Onde a turma trava aparece durante o semestre, e não na planilha de notas depois dele. Custo por aluno previsível e comparável direto com o de uma bolsa de monitoria.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="motor" class="band band--tint">
+  <div class="wrap">
+    <p class="eyebrow">// como funciona <span>— o motor por dentro</span></p>
+    <h2 class="section-h">Um funil determinístico.<br>A IA explica, nunca decide a nota.</h2>
+    <p class="lede">Todo veredito é rastreável até a regra que o produziu. É isso que sustenta a confiança do professor em expor a turma ao sistema, e é a diferença entre um diagnóstico e um palpite bem escrito.</p>
+
+    <div class="figbox" style="margin-top:32px">
+      <figure class="figure">
+        <svg viewBox="0 0 900 250" role="img" aria-label="Funil de correção: o código C do aluno passa por análise estática e por execução isolada em container, os sinais das duas entram nas heurísticas pedagógicas, que produzem o diagnóstico em 27 categorias. A IA generativa só escreve a explicação a partir do diagnóstico pronto.">
+          <defs>
+            <marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+            </marker>
+            <marker id="ar3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"/>
+            </marker>
+          </defs>
+
+          <g fill="none" stroke="currentColor" stroke-opacity=".3">
+            <rect x="10" y="94" width="130" height="58" rx="10"/>
+            <rect x="210" y="36" width="200" height="58" rx="10"/>
+            <rect x="210" y="152" width="200" height="58" rx="10"/>
+            <rect x="480" y="94" width="190" height="58" rx="10"/>
+          </g>
+          <rect x="730" y="94" width="160" height="58" rx="10" fill="var(--accent-soft)" stroke="var(--accent)" stroke-opacity=".55"/>
+          <rect x="700" y="196" width="190" height="44" rx="10" fill="none" stroke="var(--accent)" stroke-opacity=".45" stroke-dasharray="4 4"/>
+
+          <g font-family="IBM Plex Sans, sans-serif" font-size="12.5" fill="currentColor" text-anchor="middle">
+            <text x="75" y="120">Código C</text>
+            <text x="310" y="62">Análise estática</text>
+            <text x="310" y="178">Execução isolada</text>
+            <text x="575" y="120">Heurísticas pedagógicas</text>
+            <text x="810" y="120">Diagnóstico</text>
+          </g>
+          <g font-family="IBM Plex Mono, monospace" font-size="10" fill="currentColor" fill-opacity=".65" text-anchor="middle">
+            <text x="75" y="138">do aluno</text>
+            <text x="310" y="80">tree-sitter · estruturas e funções</text>
+            <text x="310" y="196">gcc isolado · sem rede · timeout</text>
+            <text x="575" y="138">27 regras, da mais grave à mais rasa</text>
+          </g>
+          <text x="810" y="138" font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--accent)" text-anchor="middle">causa + o que fazer</text>
+          <text x="795" y="216" font-family="IBM Plex Sans, sans-serif" font-size="12" fill="var(--accent)" text-anchor="middle">IA generativa</text>
+          <text x="795" y="232" font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--accent)" text-anchor="middle">só escreve a explicação</text>
+
+          <g fill="none" stroke="currentColor" stroke-width="1.4" marker-end="url(#ar2)">
+            <path d="M142 123 C 176 123, 176 65, 204 65"/>
+            <path d="M142 123 C 176 123, 176 181, 204 181"/>
+            <path d="M412 65 C 446 65, 446 123, 474 123"/>
+            <path d="M412 181 C 446 181, 446 123, 474 123"/>
+            <line x1="672" y1="123" x2="724" y2="123"/>
+          </g>
+          <path d="M810 154 L810 192" fill="none" stroke="var(--accent)" stroke-width="1.4" stroke-dasharray="4 4" marker-end="url(#ar3)"/>
+        </svg>
+        <figcaption>A nota e a categoria saem das regras, não do modelo de linguagem. O modelo entra depois do veredito pronto, e só para transformá-lo em uma explicação sobre o código daquele aluno — quando ele pede.</figcaption>
+      </figure>
+    </div>
+
+    <div class="grid-3" style="margin-top:24px">
+      <div class="card">
+        <h3>Adaptativo por questão</h3>
+        <p>Não existem “modos de correção”. Cada questão declara o que exige — recursão, ponteiro, laço proibido — e só os verificadores relevantes disparam.</p>
+      </div>
+      <div class="card">
+        <h3>Execução segura</h3>
+        <p>Cada submissão compila e roda em container isolado, sem rede e com tempo limitado. O código do aluno nunca toca a máquina de ninguém.</p>
+      </div>
+      <div class="card">
+        <h3>Sem instalar nada</h3>
+        <p>Aluno e professor usam pelo navegador. Nenhum compilador, IDE ou container na máquina, e nada de laboratório novo para a instituição.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="diagnostico" class="band">
+  <div class="wrap">
+    <p class="eyebrow">// ferramenta interativa <span>— diagnóstico ao vivo</span></p>
+    <h2 class="section-h">Escolha um erro. Veja os dois retornos.</h2>
+    <p class="lede">Três submissões de C que qualquer turma de CS1 produz na primeira semana. À esquerda, o código enviado. À direita, o que o corretor comum devolve e o que o Analytics CS1 devolve no mesmo instante.</p>
+
+    <div class="tabs" role="tablist" aria-label="Exemplos de submissão" style="margin-top:28px" id="demo-tabs"></div>
+
+    <div class="grid-2" id="demo-body">
+      <article class="panel">
+        <div class="panel-h"><span class="dot" style="background:var(--ink-3)"></span> <span id="demo-file">submissao.c</span></div>
+        <div class="panel-b">
+          <p class="ui-label">ENUNCIADO</p>
+          <p class="ui-body" id="demo-enunciado"></p>
+          <p class="ui-label" style="margin-top:16px">CÓDIGO ENVIADO</p>
+          <div class="ui-code" id="demo-code"></div>
+        </div>
+      </article>
+
+      <div class="stack" style="gap:16px">
+        <article class="panel">
+          <div class="panel-h"><span class="dot" style="background:var(--fail)"></span> corretor comum</div>
+          <div class="panel-b">
+            <div class="term" id="demo-corretor"></div>
+          </div>
+        </article>
+        <article class="panel">
+          <div class="panel-h"><span class="dot" style="background:var(--accent)"></span> analytics cs1</div>
+          <div class="panel-b">
+            <div class="ui-row" style="margin-bottom:10px">
+              <span class="badge badge--fail" id="demo-cat"></span>
+              <span class="ui-spread" id="demo-meta"></span>
+            </div>
+            <p class="ui-body" id="demo-diag"></p>
+            <div class="callout callout--info">
+              <p class="callout-t">O QUE FAZER</p>
+              <p class="callout-b" id="demo-fix"></p>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+    <p class="note" style="margin-top:16px">Os textos do diagnóstico são os que o motor gera de verdade para essas categorias, palavra por palavra.</p>
+  </div>
+</section>
+
+<section id="telas" class="band band--tint">
+  <div class="wrap">
+    <p class="eyebrow">// o produto <span>— telas do protótipo em uso</span></p>
+    <h2 class="section-h">Três telas fecham o ciclo.</h2>
+    <p class="lede">O aluno resolve e entende. O painel mostra o que ele repete. O professor vê a turma inteira colapsada em grupos de mesmo sintoma.</p>
+
+    <div class="tabs" role="tablist" aria-label="Telas do produto" style="margin-top:28px">
+      <button class="tab" role="tab" id="tb-1" aria-controls="tp-1" aria-selected="true">Questão e diagnóstico</button>
+      <button class="tab" role="tab" id="tb-2" aria-controls="tp-2" aria-selected="false">Meu progresso</button>
+      <button class="tab" role="tab" id="tb-3" aria-controls="tp-3" aria-selected="false">Painel do professor</button>
+    </div>
+
+    <div class="frame">
+      <div class="frame-bar">
+        <span class="dot" style="background:#e2564a"></span><span class="dot" style="background:#e8b53f"></span><span class="dot" style="background:#4fb56a"></span>
+        <span class="frame-url" id="frame-url">analyticscs1.app/aluno/atividades/12/questoes/2</span>
+      </div>
+
+      <div class="screen" role="tabpanel" id="tp-1" aria-labelledby="tb-1">
+        <div class="ui-nav"><b>Analytics CS1</b><span class="ui-link on">Turmas</span><span class="ui-link">Meu progresso</span><span class="ui-spread">Lucas M.</span></div>
+        <div>
+          <p class="ui-sub">← Lista 3 · Vetores e laços</p>
+          <div class="ui-row" style="margin-top:8px">
+            <h4 style="font-size:19px; font-weight:600">Questão 2</h4>
+            <span class="badge badge--mute">modo treino · tentativas ilimitadas</span>
+          </div>
+        </div>
+        <div class="ui-card">
+          <p class="ui-body">Leia <code>n</code> e depois <code>n</code> inteiros. Imprima a soma dos elementos lidos.</p>
+          <p class="ui-sub" style="margin-top:8px">Estruturas obrigatórias: <span style="color:var(--accent)">for</span></p>
+        </div>
+        <div class="ui-card">
+          <p class="ui-label">SEU CÓDIGO EM C</p>
+          <div class="ui-code">int soma = 0;
+for (int i = 0; i &lt;= n; i++) {
+    soma += v[i];
+}
+printf("%d\n", soma);</div>
+          <span class="ui-btn">Enviar nova tentativa</span>
+        </div>
+        <p class="ui-h">Resultado</p>
+        <div class="ui-card">
+          <div class="ui-row" style="margin-bottom:10px">
+            <span class="badge badge--fail">Acesso Fora dos Limites: Off-by-One</span>
+            <span class="ui-spread">tentativa 2 · 01/09 às 02:14</span>
+          </div>
+          <p class="ui-body">O laço usa <code>&lt;=</code> como limite e indexa um vetor com a variável <code>i</code>. Em C os índices válidos vão de 0 a tamanho−1, então <code>&lt;=</code> costuma acessar uma posição além do fim do vetor (erro off-by-one).</p>
+          <div class="callout callout--info">
+            <p class="callout-t">O QUE FAZER</p>
+            <p class="callout-b">Troque <code>&lt;=</code> por <code>&lt;</code> na condição do laço, ou aumente o tamanho do vetor declarado.</p>
+          </div>
+          <div class="ui-row" style="margin-top:12px"><span class="badge badge--accent">Explicar meu erro</span><span class="ui-sub">explicação sob demanda, sobre o seu código</span></div>
+        </div>
+        <div class="ui-card">
+          <p class="ui-h" style="margin-bottom:10px">Testes: 2/3 passaram</p>
+          <div class="stack" style="gap:8px">
+            <div class="ui-test ui-test--ok">✓ Correto <span>entrada: 3 / 1 2 3</span> <span>esperado: 6</span> <span>obtido: 6</span></div>
+            <div class="ui-test ui-test--fail">✗ Incorreto <span>entrada: 4 / 5 5 5 5</span> <span>esperado: 20</span> <span>obtido: 20034</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="screen" role="tabpanel" id="tp-2" aria-labelledby="tb-2" hidden>
+        <div class="ui-nav"><b>Analytics CS1</b><span class="ui-link">Turmas</span><span class="ui-link on">Meu progresso</span><span class="ui-spread">Lucas M.</span></div>
+        <div>
+          <h4 style="font-size:19px; font-weight:600">Meu progresso</h4>
+          <p class="ui-sub">O que suas tentativas mostram sobre o que você já domina e o que ainda trava.</p>
+        </div>
+        <div class="ui-kpis">
+          <div class="ui-kpi"><p class="k-l">Questões resolvidas</p><p class="k-v">14/20</p><p class="k-s">3 de 4 atividades concluídas</p></div>
+          <div class="ui-kpi"><p class="k-l">Tentativas até acertar</p><p class="k-v">2,4</p><p class="k-s">média nas questões que você resolveu</p></div>
+          <div class="ui-kpi"><p class="k-l">Acertos de primeira</p><p class="k-v">6</p><p class="k-s">questões resolvidas no primeiro envio</p></div>
+          <div class="ui-kpi"><p class="k-l">Dias seguidos</p><p class="k-v">5</p><p class="k-s">47 tentativas no total</p></div>
+        </div>
+        <div class="ui-card">
+          <p class="ui-h">Semana a semana</p>
+          <p class="ui-sub">Tentativas enviadas e questões resolvidas pela primeira vez.</p>
+          <div class="ui-mini-bars"><i style="height:38%"></i><i style="height:62%"></i><i style="height:48%"></i><i style="height:88%"></i><i style="height:70%"></i><i style="height:100%"></i></div>
+        </div>
+        <p class="ui-h">Erros que se repetem</p>
+        <div class="ui-card">
+          <div class="ui-row">
+            <span class="ui-h" style="margin:0">Off-by-one</span><span class="badge badge--ok">melhorando</span>
+            <span class="ui-spread">7× · 1 nas últimas tentativas</span>
+          </div>
+          <div class="callout callout--info"><p class="callout-b">Em C os índices vão de 0 a tamanho−1. Confira a condição de parada dos seus laços antes de enviar.</p></div>
+          <p class="ui-sub" style="margin-top:8px">Aconteceu em: Lista 2 · Q4 · Lista 3 · Q2</p>
+        </div>
+        <div class="ui-card">
+          <div class="ui-row">
+            <span class="ui-h" style="margin:0">Tudo no main</span><span class="badge badge--fail">em alta</span>
+            <span class="ui-spread">4× · 3 nas últimas tentativas</span>
+          </div>
+          <div class="callout callout--info"><p class="callout-b">Extraia a lógica para a função pedida no enunciado, com o nome e a assinatura corretos.</p></div>
+          <p class="ui-sub" style="margin-top:8px">Aconteceu em: Lista 3 · Q1 · Lista 3 · Q5</p>
+        </div>
+      </div>
+
+      <div class="screen" role="tabpanel" id="tp-3" aria-labelledby="tb-3" hidden>
+        <div class="ui-nav"><b>Analytics CS1</b><span class="ui-link">Turmas</span><span class="ui-link on">Prova 1 · Questão 3</span><span class="ui-spread">Prof. Ricardo</span></div>
+        <div class="ui-row">
+          <h4 style="font-size:19px; font-weight:600">Grupos de dificuldade</h4>
+          <span class="ui-spread">6 grupos em 58 submissões</span>
+        </div>
+        <div class="ui-card">
+          <div class="ui-row" style="margin-bottom:10px">
+            <span class="dot" style="background:#7c3aed"></span><span class="badge badge--fail">Acesso Fora dos Limites: Off-by-One</span>
+            <span class="ui-sub">· falha no teste 2</span><span class="ui-spread">19 alunos · 33%</span>
+          </div>
+          <p class="ui-body" style="border-left:2px solid var(--accent-line); padding-left:12px">Este grupo percorre o vetor até <code>i &lt;= n</code> e lê uma posição além do fim. Vale retomar em aula que os índices vão de 0 a n−1, usando o próprio código representativo abaixo.</p>
+          <div class="ui-row" style="margin-top:12px">
+            <span class="chip">2023001</span><span class="chip">2023014</span><span class="chip">2023022</span><span class="chip">2023031</span><span class="chip">+15</span>
+          </div>
+          <p class="ui-sub" style="margin-top:10px">+ Ver código representativo <span style="color:var(--fail)">· linha 7 em destaque</span></p>
+        </div>
+        <div class="ui-card">
+          <div class="ui-row" style="margin-bottom:10px">
+            <span class="dot" style="background:#e2564a"></span><span class="badge badge--fail">Tudo no Main</span>
+            <span class="ui-spread">12 alunos · 21%</span>
+          </div>
+          <p class="ui-body" style="border-left:2px solid var(--accent-line); padding-left:12px">Resolveram corretamente, mas dentro do <code>main</code>, sem a função <code>soma_vetor</code> exigida no enunciado. A lógica está certa: o que falta é modularizar.</p>
+          <div class="ui-row" style="margin-top:12px"><span class="chip">2023007</span><span class="chip">2023018</span><span class="chip">+10</span></div>
+        </div>
+        <div class="ui-card">
+          <div class="ui-row">
+            <span class="dot" style="background:#4fb56a"></span><span class="badge badge--ok">Correto</span>
+            <span class="ui-spread">21 alunos · 36%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="note" style="margin-top:16px">Telas do protótipo em funcionamento, com dados de exemplo. O agrupamento e o diagnóstico são os mesmos validados nas 539 submissões reais.</p>
+  </div>
+</section>
+
+<section id="professor" class="band">
+  <div class="wrap">
+    <p class="eyebrow">// para o professor <span>— o mesmo lote, dois trabalhos diferentes</span></p>
+    <h2 class="section-h">539 submissões viram 138 leituras.</h2>
+    <p class="lede">O agrupamento não amostra nem descarta nada: todas as submissões continuam corrigidas, uma a uma. O que muda é quantos códigos o professor precisa ler para entender a turma inteira. Quem erra do mesmo jeito cai no mesmo grupo, e a intervenção sai uma vez por dificuldade.</p>
+
+    <div class="figbox" style="margin-top:32px">
+      <figure class="figure">
+        <div class="grid-2" style="gap:28px">
+          <div>
+            <div class="dg-head"><b>Sem agrupamento</b><span>539 códigos para ler</span></div>
+            <div class="dots" id="dots-a" aria-hidden="true"></div>
+          </div>
+          <div>
+            <div class="dg-head"><b>Com agrupamento</b><span>138 códigos representativos</span></div>
+            <div class="dots" id="dots-b" aria-hidden="true"></div>
+          </div>
+        </div>
+        <figcaption>Cada quadrado é uma submissão real do conjunto de validação. À direita, os 138 destacados são os códigos representativos que o professor abre — um por assinatura de falha. Os demais recebem a mesma resposta, porque falharam do mesmo jeito. Redução medida: 3,91×.</figcaption>
+      </figure>
+    </div>
+
+    <div class="grid-3" style="margin-top:24px">
+      <div class="card">
+        <h3>A prova entra pronta</h3>
+        <p>Envie o arquivo do enunciado. As questões saem separadas, com os casos de teste montados, sem cadastrar uma a uma nem escrever entrada e saída à mão.</p>
+      </div>
+      <div class="card">
+        <h3>Você confere antes de confiar</h3>
+        <p>Cada grupo mostra o código representativo, as linhas culpadas e quem está nele. O veredito da máquina fica exposto para você revisar, não escondido atrás de uma nota.</p>
+      </div>
+      <div class="card">
+        <h3>Convive com o Moodle</h3>
+        <p>Não substitui o ambiente virtual da instituição e não depende da TI para começar: você cria a turma, manda o código de acesso e usa.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="calculadora" class="band band--tint">
+  <div class="wrap">
+    <p class="eyebrow">// ferramenta interativa <span>— calculadora de esforço</span></p>
+    <h2 class="section-h">Quanto da sua correção volta para você.</h2>
+    <p class="lede">Ajuste sua turma e veja a conta. O fator de agrupamento é o medido na validação, 3,91×, e vale para turmas cujas falhas se repetem — que é o caso de toda turma de CS1.</p>
+
+    <div class="figbox calc" style="margin-top:32px">
+      <form id="calc" aria-label="Calculadora de esforço de correção">
+        <div class="field">
+          <div class="field-h"><b><label for="c-alunos">Alunos na turma</label></b><output id="o-alunos">60</output></div>
+          <input type="range" id="c-alunos" min="10" max="150" step="5" value="60">
+        </div>
+        <div class="field">
+          <div class="field-h"><b><label for="c-questoes">Questões por prova</label></b><output id="o-questoes">5</output></div>
+          <input type="range" id="c-questoes" min="1" max="12" step="1" value="5">
+        </div>
+        <div class="field">
+          <div class="field-h"><b><label for="c-min">Minutos por código lido</label></b><output id="o-min">4</output></div>
+          <input type="range" id="c-min" min="1" max="15" step="1" value="4">
+        </div>
+        <div class="field">
+          <div class="field-h"><b><label for="c-provas">Provas e listas no semestre</label></b><output id="o-provas">4</output></div>
+          <input type="range" id="c-provas" min="1" max="12" step="1" value="4">
+        </div>
+      </form>
+
+      <div class="result">
+        <p class="ui-sub" id="calc-head"></p>
+        <div class="res-row">
+          <p class="res-lab">Correção manual, um código por vez</p>
+          <div class="res-bar res-bar--now" id="bar-now">20 h</div>
+        </div>
+        <div class="res-row">
+          <p class="res-lab">Lendo um representante por grupo</p>
+          <div class="res-bar res-bar--new" id="bar-new">5 h</div>
+        </div>
+        <div class="saving">
+          <b id="calc-save">15 horas por prova</b>
+          <p class="ui-body" id="calc-sem"></p>
+        </div>
+        <p class="note">A conta usa só o tempo de leitura de código. Não entram a montagem da prova, que o sistema também automatiza, nem o retorno individual, que hoje simplesmente não acontece por falta de tempo.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="alternativas" class="band">
+  <div class="wrap">
+    <p class="eyebrow">// contra o que estamos</p>
+    <h2 class="section-h">Nenhum concorrente cobra. Nenhum explica.</h2>
+    <p class="lede">O mercado de correção automática já existe e é gratuito, então o preço não é o eixo da disputa. A disputa é por um atributo que hoje ninguém entrega. Nas entrevistas, o concorrente que apareceu cinco vezes em cinco não foi o corretor do Moodle: foi o assistente de IA.</p>
+
+    <div class="cmp-wrap" style="margin-top:32px">
+      <table class="cmp">
+        <thead>
+          <tr>
+            <th scope="col">&nbsp;</th>
+            <th scope="col">CodeRunner e VPL</th>
+            <th scope="col">Beecrowd</th>
+            <th scope="col">Assistente de IA</th>
+            <th scope="col">Monitoria</th>
+            <th scope="col" class="us">Analytics CS1</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Diz se passou nos testes</th>
+            <td><span class="mk mk--y">●</span></td><td><span class="mk mk--y">●</span></td><td><span class="mk mk--n">○</span></td><td><span class="mk mk--n">○</span></td>
+            <td class="us"><span class="mk mk--p">●</span></td>
+          </tr>
+          <tr>
+            <th scope="row">Explica a causa do erro</th>
+            <td><span class="mk mk--n">○</span></td><td><span class="mk mk--n">○</span></td><td><span class="mk mk--y">●</span></td><td><span class="mk mk--y">●</span></td>
+            <td class="us"><span class="mk mk--p">●</span></td>
+          </tr>
+          <tr>
+            <th scope="row">Não entrega o código pronto</th>
+            <td><span class="mk mk--y">●</span></td><td><span class="mk mk--y">●</span></td><td><span class="mk mk--n">○</span></td><td><span class="mk mk--y">●</span></td>
+            <td class="us"><span class="mk mk--p">●</span></td>
+          </tr>
+          <tr>
+            <th scope="row">Mostra o erro que o aluno repete</th>
+            <td><span class="mk mk--n">○</span></td><td><span class="mk mk--n">○</span></td><td><span class="mk mk--n">○</span></td><td><span class="mk mk--n">○</span></td>
+            <td class="us"><span class="mk mk--p">●</span></td>
+          </tr>
+          <tr>
+            <th scope="row">Agrupa a turma por dificuldade</th>
+            <td><span class="mk mk--n">○</span></td><td><span class="mk mk--n">○</span></td><td><span class="mk mk--n">○</span></td><td><span class="mk mk--n">○</span></td>
+            <td class="us"><span class="mk mk--p">●</span></td>
+          </tr>
+          <tr>
+            <th scope="row">Disponível às duas da manhã</th>
+            <td><span class="mk mk--y">●</span></td><td><span class="mk mk--y">●</span></td><td><span class="mk mk--y">●</span></td><td><span class="mk mk--n">○</span></td>
+            <td class="us"><span class="mk mk--p">●</span></td>
+          </tr>
+          <tr>
+            <th scope="row">Veredito auditável até a regra</th>
+            <td><span class="mk mk--y">●</span></td><td><span class="mk mk--y">●</span></td><td><span class="mk mk--n">○</span></td><td><span class="mk mk--y">●</span></td>
+            <td class="us"><span class="mk mk--p">●</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note" style="margin-top:14px">● atende · ○ não atende. Comparação por atributo, não por preço: CodeRunner, VPL e Beecrowd são gratuitos e continuam sendo a alternativa padrão.</p>
+  </div>
+</section>
+
+<section id="depoimentos" class="band band--tint">
+  <div class="wrap">
+    <p class="eyebrow">// quem já viu funcionando</p>
+    <h2 class="section-h">Falas da primeira rodada de campo.</h2>
+    <p class="lede">Cinco alunos de disciplina introdutória viram a plataforma diagnosticando um erro real de código. Estas foram as reações, registradas na hora.</p>
+
+    <div class="quotes" style="margin-top:32px">
+      <figure class="quote">
+        <span class="badge badge--accent">sobre o diagnóstico</span>
+        <blockquote>“É a primeira vez que o erro tem nome. Quando aparece ‘não passou nos testes’ eu não sei nem se o problema é a conta, se é o jeito de escrever ou se eu li o enunciado errado. Aqui está escrito o que é.”</blockquote>
+        <cite><b>Calouro de Engenharia, 18 anos</b>Primeiro contato com programação. Já perdeu entrega mais de uma vez.</cite>
+      </figure>
+      <figure class="quote">
+        <span class="badge badge--accent">sobre o acompanhamento</span>
+        <blockquote>“Trouxe uma possibilidade de aprender com os exercícios e com a prova. É visual, dá para ver a sua progressão pelos indicadores, o seu desempenho e o tempo gasto.”</blockquote>
+        <cite><b>Aluno que trancou a disciplina</b>Estuda por videoaula e por IA generativa, sempre à noite e sozinho.</cite>
+      </figure>
+      <figure class="quote">
+        <span class="badge badge--accent">sobre o retorno imediato</span>
+        <blockquote>“Em vez de esperar dias pelo resultado para entender onde errou, você descobre a falha no momento da submissão e já recebe dicas de como corrigir.”</blockquote>
+        <cite><b>Aluna que estuda por exercício e gabarito</b>Única da amostra que declarou uso semanal, e disse o motivo sem ser perguntada.</cite>
+      </figure>
+    </div>
+    <p class="note" style="margin-top:18px">Falas registradas nas entrevistas de Descoberta do Cliente, agosto de 2026. As conversas foram anônimas, por isso identificamos cada pessoa pelo perfil. Ainda não entrevistamos professores: quando isso acontecer, as falas deles entram aqui do mesmo jeito.</p>
+  </div>
+</section>
+
+<section id="cadastro" class="band">
+  <div class="wrap">
+    <div class="cta-box">
+      <div class="grid-2" style="gap:clamp(24px,4vw,48px); align-items:start">
+        <div>
+          <p class="eyebrow">// piloto do semestre</p>
+          <h2 class="section-h" style="font-size:clamp(26px,3.2vw,36px)">Abra sua turma no piloto.</h2>
+          <p class="lede" style="margin-top:16px">Professor entra com a própria turma: cria a conta, sobe o arquivo da prova e manda o código de acesso no grupo. Aluno entra com o código que o professor mandar — ou pela lista, para avisarmos quando a entrada sem turma abrir.</p>
+          <div class="stack" style="gap:10px; margin-top:22px">
+            <p class="ui-body"><b>Gratuito na fase de piloto</b>, para aluno, professor e turma.</p>
+            <p class="ui-body">Depois, cobrança por aluno em duas modalidades: plano individual, na faixa de R$ 19 a R$ 29 por mês, ou por turma, de R$ 8 a R$ 15 por aluno por semestre. São faixas em teste, e o que a disciplina exige do aluno não vira item pago.</p>
+          </div>
+        </div>
+
+        <form id="signup" novalidate>
+          <div class="form-grid">
+            <div class="form-field wide">
+              <label for="f-nome">Nome</label>
+              <input id="f-nome" name="nome" type="text" autocomplete="name" required placeholder="Como podemos te chamar">
+            </div>
+            <div class="form-field wide">
+              <label for="f-email">E-mail</label>
+              <input id="f-email" name="email" type="email" autocomplete="email" required placeholder="voce@instituicao.edu.br">
+            </div>
+            <div class="form-field">
+              <label for="f-perfil">Você é</label>
+              <select id="f-perfil" name="perfil">
+                <option>Aluno de CS1</option>
+                <option>Professor da disciplina</option>
+                <option>Monitor</option>
+                <option>Coordenação de curso</option>
+                <option>Estudo por conta própria</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label for="f-inst">Instituição <span style="color:var(--ink-3)">(opcional)</span></label>
+              <input id="f-inst" name="instituicao" type="text" placeholder="Sua universidade">
+            </div>
+            <div class="form-field wide">
+              <button class="btn btn--lg" type="submit" id="f-submit" style="width:100%; justify-content:center">Entrar na lista do piloto</button>
+            </div>
+          </div>
+          <p class="form-msg" id="f-msg" role="status" aria-live="polite"></p>
+          <p class="note">Piloto em preparação: a inscrição fica guardada no seu navegador até a abertura das próximas turmas.</p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap foot-in">
+    <p><b style="color:var(--ink)">Analytics CS1</b> — turma virtual para disciplinas introdutórias de programação em C. Motor validado em 539 submissões reais.</p>
+    <p><a href="#problema">O problema</a> · <a href="#motor">Como funciona</a> · <a href="#calculadora">Calculadora</a> · <a href="#cadastro">Piloto</a></p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- diagnóstico ao vivo ---------- */
+  const DEMOS = [
+    {
+      aba: 'Vetor com off-by-one',
+      file: 'soma_vetor.c',
+      enunciado: 'Leia n e depois n inteiros. Imprima a soma dos elementos lidos. A questão exige o uso de for.',
+      code: '#include &lt;stdio.h&gt;\n\nint main() {\n    int n, v[100], soma = 0;\n    scanf("%d", &amp;n);\n    for (int i = 0; i &lt; n; i++) scanf("%d", &amp;v[i]);\n<span class="hl">    for (int i = 0; i &lt;= n; i++) soma += v[i];</span>\n    printf("%d\\n", soma);\n    return 0;\n}',
+      corretor: 'Testes    <span class="c-fail">1/3</span>\nResultado <span class="c-fail">incorreto</span>\n\n<span class="c-dim">nenhuma outra informação</span>',
+      cat: 'Acesso Fora dos Limites: Off-by-One',
+      catClass: 'badge--fail',
+      meta: 'tentativa 2 · linha 7',
+      diag: 'O laço usa <code>&lt;=</code> como limite e indexa um vetor com a variável <code>i</code>. Em C os índices válidos vão de 0 a tamanho−1, então <code>&lt;=</code> costuma acessar uma posição além do fim do vetor (erro off-by-one).',
+      fix: 'Troque <code>&lt;=</code> por <code>&lt;</code> na condição do laço, ou aumente o tamanho do vetor declarado.'
+    },
+    {
+      aba: 'Passa nos testes, mas…',
+      file: 'fatorial.c',
+      enunciado: 'Implemente a função fatorial(int n), que devolve n!. O main deve apenas ler n e imprimir o resultado.',
+      code: '#include &lt;stdio.h&gt;\n\nint main() {\n    int n, f = 1;\n    scanf("%d", &amp;n);\n<span class="hl">    for (int i = 1; i &lt;= n; i++) f *= i;</span>\n    printf("%d\\n", f);\n    return 0;\n}',
+      corretor: 'Testes    <span class="c-ok">3/3</span>\nResultado <span class="c-ok">correto</span>\n\n<span class="c-dim">a função exigida não foi verificada</span>',
+      cat: 'Tudo no Main',
+      catClass: 'badge--fail',
+      meta: 'tentativa 1 · estrutura exigida',
+      diag: 'O código resolve o problema inteiramente dentro do <code>main</code>, sem definir a função exigida: <code>fatorial</code>.',
+      fix: 'Modularize a solução: extraia a lógica para a função pedida no enunciado, com o nome e a assinatura corretos.'
+    },
+    {
+      aba: 'Não compila',
+      file: 'dobro.c',
+      enunciado: 'Leia um inteiro n e imprima o dobro dele.',
+      code: '#include &lt;stdio.h&gt;\n\nint main() {\n    int n;\n<span class="hl">    scanf("%d", &amp;n)</span>\n    printf("%d\\n", n * 2);\n    return 0;\n}',
+      corretor: '<span class="c-fail">main.c: In function \'main\':</span>\nmain.c:5:20: <span class="c-fail">error:</span> expected \';\'\n  before \'printf\'\n    5 |     scanf("%d", &amp;n)\n      |                    <span class="c-fail">^</span>',
+      cat: 'Sintaxe: Ponto e Vírgula Ausente',
+      catClass: 'badge--fail',
+      meta: 'tentativa 1 · linha 5',
+      diag: 'Uma ou mais instruções não foram terminadas com <code>;</code>. A linha culpada aparece destacada no seu código.',
+      fix: 'Localize a linha indicada pelo compilador e adicione o ponto e vírgula ao final da instrução.'
+    }
+  ];
+
+  const demoTabs = document.getElementById('demo-tabs');
+  const demoBody = document.getElementById('demo-body');
+  const el = (id) => document.getElementById(id);
+
+  function pintarDemo(i) {
+    const d = DEMOS[i];
+    el('demo-file').textContent = d.file;
+    el('demo-enunciado').textContent = d.enunciado;
+    el('demo-code').innerHTML = d.code;
+    el('demo-corretor').innerHTML = d.corretor;
+    const cat = el('demo-cat');
+    cat.className = 'badge ' + d.catClass;
+    cat.textContent = d.cat;
+    el('demo-meta').textContent = d.meta;
+    el('demo-diag').innerHTML = d.diag;
+    el('demo-fix').innerHTML = d.fix;
+    Array.from(demoTabs.children).forEach((b, k) => b.setAttribute('aria-selected', String(k === i)));
+    demoBody.setAttribute('aria-labelledby', 'dtab-' + i);
+  }
+
+  DEMOS.forEach((d, i) => {
+    const b = document.createElement('button');
+    b.className = 'tab';
+    b.type = 'button';
+    b.id = 'dtab-' + i;
+    b.setAttribute('role', 'tab');
+    b.setAttribute('aria-selected', String(i === 0));
+    b.textContent = d.aba;
+    b.addEventListener('click', () => pintarDemo(i));
+    demoTabs.appendChild(b);
+  });
+  demoBody.setAttribute('role', 'region');
+  pintarDemo(0);
+
+  /* ---------- telas do protótipo ---------- */
+  const URLS = [
+    'analyticscs1.app/aluno/atividades/12/questoes/2',
+    'analyticscs1.app/aluno/progresso',
+    'analyticscs1.app/exam/12/questions/3'
+  ];
+  const telaTabs = Array.from(document.querySelectorAll('[id^="tb-"]'));
+  const telaPanes = Array.from(document.querySelectorAll('[id^="tp-"]'));
+
+  function trocarTela(i) {
+    telaTabs.forEach((t, k) => {
+      t.setAttribute('aria-selected', String(k === i));
+      t.tabIndex = k === i ? 0 : -1;
+    });
+    telaPanes.forEach((p, k) => { p.hidden = k !== i; });
+    el('frame-url').textContent = URLS[i];
+  }
+  telaTabs.forEach((t, i) => {
+    t.type = 'button';
+    t.addEventListener('click', () => trocarTela(i));
+    t.addEventListener('keydown', (e) => {
+      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+      e.preventDefault();
+      const next = (i + (e.key === 'ArrowRight' ? 1 : telaTabs.length - 1)) % telaTabs.length;
+      trocarTela(next);
+      telaTabs[next].focus();
+    });
+  });
+  trocarTela(0);
+
+  /* ---------- campo de 539 submissões ---------- */
+  const TOTAL = 539, GRUPOS = 138;
+  const reps = new Set();
+  (function () {
+    // Sorteio determinístico: os representantes ficam espalhados como grupos
+    // reais, sem o padrão diagonal de uma seleção regular.
+    const ordem = Array.from({ length: TOTAL }, (_, i) => i);
+    let semente = 20260901;
+    for (let i = TOTAL - 1; i > 0; i--) {
+      semente = (semente * 1103515245 + 12345) % 2147483648;
+      const j = semente % (i + 1);
+      const t = ordem[i]; ordem[i] = ordem[j]; ordem[j] = t;
+    }
+    ordem.slice(0, GRUPOS).forEach((i) => reps.add(i));
+  })();
+
+  function campo(node, destacar) {
+    const frag = document.createDocumentFragment();
+    for (let i = 0; i < TOTAL; i++) {
+      const d = document.createElement('i');
+      if (destacar) d.className = reps.has(i) ? 'rep' : 'hid';
+      frag.appendChild(d);
+    }
+    node.appendChild(frag);
+  }
+  campo(el('dots-a'), false);
+  campo(el('dots-b'), true);
+
+  /* ---------- calculadora de esforço ---------- */
+  const FATOR = 3.91;
+  const nums = { alunos: el('c-alunos'), questoes: el('c-questoes'), min: el('c-min'), provas: el('c-provas') };
+  const fmtH = (h) => (h >= 10 ? Math.round(h).toLocaleString('pt-BR') : h.toFixed(1).replace('.', ',')) + ' h';
+
+  function calcular() {
+    const alunos = +nums.alunos.value, questoes = +nums.questoes.value;
+    const min = +nums.min.value, provas = +nums.provas.value;
+    el('o-alunos').textContent = alunos;
+    el('o-questoes').textContent = questoes;
+    el('o-min').textContent = min;
+    el('o-provas').textContent = provas;
+
+    const subs = alunos * questoes;
+    const itens = Math.ceil(subs / FATOR);
+    const hNow = subs * min / 60, hNew = itens * min / 60;
+
+    el('calc-head').textContent = alunos + ' alunos × ' + questoes + ' questões = ' + subs.toLocaleString('pt-BR') +
+      ' submissões, que colapsam em ' + itens.toLocaleString('pt-BR') + ' códigos representativos.';
+    const bNow = el('bar-now'), bNew = el('bar-new');
+    bNow.style.width = '100%';
+    bNow.textContent = fmtH(hNow);
+    bNew.style.width = Math.max(12, (hNew / hNow) * 100) + '%';
+    bNew.textContent = fmtH(hNew);
+    el('calc-save').textContent = fmtH(hNow - hNew) + ' de volta por avaliação';
+    el('calc-sem').textContent = 'Com ' + provas + (provas === 1 ? ' avaliação' : ' avaliações') + ' no semestre, são ' +
+      fmtH((hNow - hNew) * provas) + ' que deixam de ir para a leitura de código repetido.';
+  }
+  Object.values(nums).forEach((i) => i.addEventListener('input', calcular));
+  calcular();
+
+  /* ---------- lista do piloto ---------- */
+  const form = el('signup'), msg = el('f-msg'), botao = el('f-submit'), grade = form.querySelector('.form-grid');
+  const CHAVE = 'analytics-cs1:inscricao';
+
+  function confirmar(nome) {
+    grade.hidden = true;
+    msg.className = 'form-msg ok';
+    msg.textContent = 'Pronto, ' + nome.split(' ')[0] + '. Você está na lista: avisamos assim que o piloto abrir para a sua turma.';
+  }
+
+  try {
+    const salvo = JSON.parse(localStorage.getItem(CHAVE) || 'null');
+    if (salvo && salvo.nome) confirmar(salvo.nome);
+  } catch (e) { /* navegador sem armazenamento: o formulário continua em branco */ }
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const nome = el('f-nome').value.trim();
+    const email = el('f-email').value.trim();
+    msg.className = 'form-msg';
+    if (nome.length < 2) { msg.classList.add('err'); msg.textContent = 'Escreva seu nome para continuarmos.'; el('f-nome').focus(); return; }
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { msg.classList.add('err'); msg.textContent = 'Confira o e-mail: faltou o @ ou o domínio.'; el('f-email').focus(); return; }
+
+    const inscricao = {
+      nome: nome,
+      email: email,
+      perfil: el('f-perfil').value,
+      instituicao: el('f-inst').value.trim(),
+      registrado_em: new Date().toISOString()
+    };
+    try { localStorage.setItem(CHAVE, JSON.stringify(inscricao)); } catch (err) { /* segue sem guardar */ }
+    confirmar(nome);
+  });
+
+  /* ---------- tema claro e escuro ---------- */
+  const raiz = document.documentElement, btnTema = el('tema'), CHAVE_TEMA = 'analytics-cs1:tema';
+  btnTema.addEventListener('click', () => {
+    const atual = raiz.getAttribute('data-theme') ||
+      (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const novo = atual === 'dark' ? 'light' : 'dark';
+    raiz.setAttribute('data-theme', novo);
+    try { localStorage.setItem(CHAVE_TEMA, novo); } catch (e) { /* segue sem guardar */ }
+  });
+})();
+</script>
+</body>
+</html>
