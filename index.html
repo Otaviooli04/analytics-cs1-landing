@@ -3,17 +3,34 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Turma virtual para disciplinas introdutorias de programacao em C. Explica ao aluno a causa do erro e entrega ao professor a turma agrupada por dificuldade.">
+<meta name="description" content="Turma virtual para disciplinas introdutorias de programacao em C. O aluno envia o codigo e recebe o nome do erro, a causa e o que fazer. O professor recebe a mesma turma agrupada por dificuldade.">
 <meta name="theme-color" content="#7c3aed">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Analytics CS1 - errar e entender por que">
-<meta property="og:description" content="O corretor da disciplina devolve nao passou nos testes. Nos devolvemos a causa do erro, o que fazer para corrigir e a turma inteira agrupada por dificuldade.">
+<meta property="og:description" content="O corretor da disciplina devolve nao passou nos testes. Nos devolvemos a causa do erro e o que fazer para corrigir, e do outro lado a turma inteira agrupada por dificuldade.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%2232%22%20y2%3D%2232%22%20gradientUnits%3D%22userSpaceOnUse%22%3E%3Cstop%20stop-color%3D%22%238b5cf6%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%236d28d9%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%2232%22%20height%3D%2232%22%20rx%3D%228%22%20fill%3D%22url%28%23g%29%22%2F%3E%3Cg%20fill%3D%22%23fff%22%3E%3Crect%20x%3D%227%22%20y%3D%2217%22%20width%3D%224.2%22%20height%3D%229%22%20rx%3D%222.1%22%2F%3E%3Crect%20x%3D%2213.9%22%20y%3D%2212%22%20width%3D%224.2%22%20height%3D%2214%22%20rx%3D%222.1%22%2F%3E%3Crect%20x%3D%2220.8%22%20y%3D%227%22%20width%3D%224.2%22%20height%3D%2219%22%20rx%3D%222.1%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E">
 <script>
-  // Aplica o tema salvo antes da primeira pintura, para nao piscar.
+  // Aplica o tema e a trilha antes da primeira pintura, para nao piscar.
   try {
     var t = localStorage.getItem('analytics-cs1:tema');
     if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+  (function () {
+    var valida = function (v) { return v === 'aluno' || v === 'professor' ? v : null; };
+    var escolha = null;
+    try {
+      escolha = valida(new URLSearchParams(location.search).get('trilha')) ||
+                valida((location.hash || '').replace('#', '')) ||
+                valida(localStorage.getItem('analytics-cs1:trilha'));
+    } catch (e) {}
+    document.documentElement.setAttribute('data-trilha', escolha || 'professor');
+  })();
+  // O conteúdo sempre aparece com transição. A única exigência é haver
+  // IntersectionObserver para revelar de volta o que for escondido. Quem pediu menos
+  // movimento no sistema perde o deslocamento e os efeitos de movimento, mas continua
+  // vendo o conteúdo surgir, e isso é decidido em CSS, mais abaixo.
+  try {
+    if ('IntersectionObserver' in window) document.documentElement.setAttribute('data-anima', 'on');
   } catch (e) {}
 </script>
 <style>
@@ -37,6 +54,7 @@
   --info:#1d4ed8; --info-soft:#eaf0fe; --info-line:#cfdcfb;
   --code-bg:#191524; --code-ink:#e8e3f2; --code-dim:#7d7594;
   --on-accent:#ffffff;
+  --marca-1:#8b5cf6; --marca-2:#6d28d9;
   --shadow:0 1px 2px rgba(23,19,31,.04), 0 12px 32px -16px rgba(23,19,31,.16);
   --radius:14px;
 }
@@ -67,6 +85,40 @@
     --shadow:0 1px 2px rgba(0,0,0,.4), 0 14px 34px -18px rgba(0,0,0,.7);
 }
 
+/* A trilha do professor troca o acento para índigo. As regras vêm depois dos blocos de
+   tema de propósito, e as duas variantes escuras têm especificidade maior que a clara,
+   senão o tema escuro perderia para a cor da trilha. */
+:root[data-trilha="professor"]{
+  --accent:#4f46e5; --accent-deep:#3730a3; --accent-soft:#eef0fe; --accent-line:#d3d7fb;
+  --marca-1:#818cf8; --marca-2:#4338ca;
+}
+@media (prefers-color-scheme: dark){
+  :root[data-trilha="professor"]:not([data-theme="light"]){
+    --accent:#a5b4fc; --accent-deep:#c7d0fe; --accent-soft:#1d2040; --accent-line:#333a66;
+    --marca-1:#a5b4fc; --marca-2:#4f46e5;
+  }
+}
+:root[data-theme="dark"][data-trilha="professor"]{
+  --accent:#a5b4fc; --accent-deep:#c7d0fe; --accent-soft:#1d2040; --accent-line:#333a66;
+  --marca-1:#a5b4fc; --marca-2:#4f46e5;
+}
+
+/* Registrar as cores deixa a troca de trilha e a de tema acontecerem em transição,
+   e não em corte seco. Sem suporte a @property, a cor simplesmente troca na hora. */
+@property --accent{syntax:'<color>'; inherits:true; initial-value:#7c3aed}
+@property --accent-deep{syntax:'<color>'; inherits:true; initial-value:#5b21b6}
+@property --accent-soft{syntax:'<color>'; inherits:true; initial-value:#f1ecfe}
+@property --accent-line{syntax:'<color>'; inherits:true; initial-value:#ddd0fb}
+@property --marca-1{syntax:'<color>'; inherits:true; initial-value:#8b5cf6}
+@property --marca-2{syntax:'<color>'; inherits:true; initial-value:#6d28d9}
+:root{
+  transition:--accent .42s ease, --accent-deep .42s ease, --accent-soft .42s ease,
+             --accent-line .42s ease, --marca-1 .42s ease, --marca-2 .42s ease;
+}
+
+html{scroll-behavior:smooth}
+section[id]{scroll-margin-top:76px}
+
 *{box-sizing:border-box}
 body{
   background:var(--ground); color:var(--ink);
@@ -78,11 +130,27 @@ p{margin:0}
 a{color:inherit}
 img,svg{max-width:100%}
 :focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:6px}
-@media (prefers-reduced-motion: reduce){*{animation:none !important; transition:none !important}}
+@media (prefers-reduced-motion: reduce){
+  *{animation:none !important}
+  .trilhas::before, :root{transition:none !important}
+  html{scroll-behavior:auto}
+}
 
 .wrap{width:min(1080px,92vw); margin-inline:auto}
 .band{padding:clamp(56px,8vw,104px) 0}
-.band--tint{background:var(--surface-2); border-block:1px solid var(--line)}
+/* Faixa clara alternada. Como as seções de trilha entram e saem, a alternância é
+   declarada por trilha: se a ordem das seções mudar, refazer as duas listas. */
+.band--tint,
+#problema, #motor,
+:root[data-trilha="professor"] #professor,
+:root[data-trilha="professor"] #alternativas,
+:root[data-trilha="professor"] #cadastro,
+:root[data-trilha="aluno"] #aluno,
+:root[data-trilha="aluno"] #depoimentos{background:var(--surface-2); border-block:1px solid var(--line)}
+
+/* Só o lado escolhido aparece. */
+:root[data-trilha="professor"] [data-lado="aluno"],
+:root[data-trilha="aluno"] [data-lado="professor"]{display:none !important}
 .eyebrow{
   font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:12px; letter-spacing:.06em;
   color:var(--accent); margin:0 0 14px; font-weight:500;
@@ -233,6 +301,7 @@ img,svg{max-width:100%}
 .ui-test{border:1px solid; border-radius:9px; padding:9px 12px; font-family:"IBM Plex Mono",monospace; font-size:11.5px; display:flex; gap:16px; flex-wrap:wrap}
 .ui-test--ok{background:var(--ok-soft); border-color:var(--ok-line); color:var(--ok)}
 .ui-test--fail{background:var(--fail-soft); border-color:var(--fail-line); color:var(--fail)}
+.ui-test--mute{background:var(--surface-2); border-color:var(--line); color:var(--ink-2)}
 .ui-test span{color:var(--ink-3)}
 .ui-mini-bars{display:flex; align-items:flex-end; gap:6px; height:56px; margin-top:10px}
 .ui-mini-bars i{flex:1; background:var(--accent-soft); border:1px solid var(--accent-line); border-radius:4px 4px 0 0; display:block}
@@ -259,7 +328,7 @@ input[type=range]{width:100%; accent-color:var(--accent); cursor:pointer}
 .res-row{display:grid; grid-template-columns:150px 1fr; gap:14px; align-items:center}
 @media (max-width:560px){.res-row{grid-template-columns:1fr}}
 .res-lab{font-size:13.5px; color:var(--ink-2)}
-.res-bar{height:34px; border-radius:8px; display:flex; align-items:center; padding:0 12px; font-family:"IBM Plex Mono",monospace; font-size:13px; font-weight:500; color:#fff; min-width:fit-content; white-space:nowrap; transition:width .3s ease}
+.res-bar{height:34px; border-radius:8px; display:flex; align-items:center; padding:0 12px; font-family:"IBM Plex Mono",monospace; font-size:13px; font-weight:500; color:#fff; min-width:fit-content; white-space:nowrap; overflow:hidden; transition:width .45s cubic-bezier(.16,.68,.32,1), padding .45s ease}
 .res-bar--now{background:var(--line-strong); color:var(--ink)}
 .res-bar--new{background:var(--accent); color:var(--on-accent)}
 .saving{background:var(--accent-soft); border:1px solid var(--accent-line); border-radius:11px; padding:16px 18px}
@@ -304,6 +373,96 @@ table.cmp tr:last-child th, table.cmp tr:last-child td{border-bottom:0}
 footer{border-top:1px solid var(--line); padding:36px 0 56px; font-size:13px; color:var(--ink-3)}
 footer a{color:var(--ink-2)}
 .foot-in{display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap; align-items:center}
+
+/* ---------- entradas ligadas à rolagem ----------
+   Duas camadas de propósito. O SURGIR (opacidade) vale sempre, porque aparecer não é
+   movimento e não incomoda ninguém. O MOVIMENTO (deslocar, crescer, contar, acender em
+   onda) fica na media query de baixo e some para quem pediu menos movimento no sistema.
+   Tudo depende de data-anima, que só existe se houver IntersectionObserver para
+   revelar de volta. Sem o atributo, nada aqui casa e a página nasce inteira. */
+:root[data-anima="on"] .revela{opacity:0; transition:opacity .55s ease}
+:root[data-anima="on"] .revela.vis{opacity:1}
+
+/* Os diagramas se montam na ordem em que são lidos: caixas, rótulos, setas. */
+:root[data-anima="on"] .figure svg > *{opacity:0; transition:opacity .5s ease}
+:root[data-anima="on"] .vis .figure svg > *{opacity:1}
+:root[data-anima="on"] .vis .figure svg > *:nth-child(1){transition-delay:0.10s}
+:root[data-anima="on"] .vis .figure svg > *:nth-child(2){transition-delay:0.16s}
+:root[data-anima="on"] .vis .figure svg > *:nth-child(3){transition-delay:0.22s}
+:root[data-anima="on"] .vis .figure svg > *:nth-child(4){transition-delay:0.28s}
+:root[data-anima="on"] .vis .figure svg > *:nth-child(5){transition-delay:0.34s}
+:root[data-anima="on"] .vis .figure svg > *:nth-child(6){transition-delay:0.40s}
+:root[data-anima="on"] .vis .figure svg > *:nth-child(7){transition-delay:0.46s}
+:root[data-anima="on"] .vis .figure svg > *:nth-child(8){transition-delay:0.52s}
+:root[data-anima="on"] .vis .figure svg > *:nth-child(9){transition-delay:0.58s}
+:root[data-anima="on"] .vis .figure svg > *:nth-child(10){transition-delay:0.64s}
+:root[data-anima="on"] .vis .figure svg > *:nth-child(11){transition-delay:0.70s}
+:root[data-anima="on"] .vis .figure svg > *:nth-child(12){transition-delay:0.76s}
+:root[data-anima="on"] .vis .figure svg > *:nth-child(13){transition-delay:0.82s}
+:root[data-anima="on"] .vis .figure svg > *:nth-child(14){transition-delay:0.88s}
+
+/* O comparativo entra linha a linha, como quem confere item por item. */
+:root[data-anima="on"] .cmp-wrap tbody tr{opacity:0; transition:opacity .5s ease}
+:root[data-anima="on"] .cmp-wrap.vis tbody tr{opacity:1}
+:root[data-anima="on"] .cmp-wrap.vis tbody tr:nth-child(1){transition-delay:0.06s}
+:root[data-anima="on"] .cmp-wrap.vis tbody tr:nth-child(2){transition-delay:0.12s}
+:root[data-anima="on"] .cmp-wrap.vis tbody tr:nth-child(3){transition-delay:0.18s}
+:root[data-anima="on"] .cmp-wrap.vis tbody tr:nth-child(4){transition-delay:0.24s}
+:root[data-anima="on"] .cmp-wrap.vis tbody tr:nth-child(5){transition-delay:0.30s}
+:root[data-anima="on"] .cmp-wrap.vis tbody tr:nth-child(6){transition-delay:0.36s}
+:root[data-anima="on"] .cmp-wrap.vis tbody tr:nth-child(7){transition-delay:0.42s}
+
+@media (prefers-reduced-motion: no-preference){
+  /* O conteúdo sobe enquanto aparece. */
+  :root[data-anima="on"] .revela{
+    transform:translateY(20px);
+    transition:opacity .65s cubic-bezier(.16,.68,.32,1), transform .65s cubic-bezier(.16,.68,.32,1);
+  }
+  :root[data-anima="on"] .revela.vis{transform:none}
+  :root[data-anima="on"] .cmp-wrap tbody tr{transform:translateY(10px); transition:opacity .5s ease, transform .5s ease}
+  :root[data-anima="on"] .cmp-wrap.vis tbody tr{transform:none}
+
+  /* O topo não espera rolagem: entra escalonado no carregamento. */
+  @keyframes sobe{from{opacity:0; transform:translateY(18px)} to{opacity:1; transform:none}}
+  :root[data-anima="on"] .hero > *:not(.split),
+  :root[data-anima="on"] .hero .split > *{animation:sobe .75s cubic-bezier(.16,.68,.32,1) both}
+  :root[data-anima="on"] .hero > *:nth-child(1){animation-delay:.04s}
+  :root[data-anima="on"] .hero > *:nth-child(2){animation-delay:.10s}
+  :root[data-anima="on"] .hero > *:nth-child(3){animation-delay:.16s}
+  :root[data-anima="on"] .hero > *:nth-child(4){animation-delay:.21s}
+  :root[data-anima="on"] .hero > *:nth-child(5){animation-delay:.21s}
+  :root[data-anima="on"] .hero > *:nth-child(6){animation-delay:.27s}
+  :root[data-anima="on"] .hero > *:nth-child(7){animation-delay:.33s}
+  :root[data-anima="on"] .hero .split > *:nth-child(1){animation-delay:.40s}
+  :root[data-anima="on"] .hero .split > *:nth-child(2){animation-delay:.48s}
+
+  /* As barras das entrevistas crescem a partir da origem. */
+  :root[data-anima="on"] .bar-fill{transform:scaleX(0); transform-origin:left; transition:transform .9s cubic-bezier(.16,.68,.32,1)}
+  :root[data-anima="on"] .vis .bar-fill{transform:none}
+  :root[data-anima="on"] .vis .bar-row:nth-child(1) .bar-fill{transition-delay:0.23s}
+  :root[data-anima="on"] .vis .bar-row:nth-child(2) .bar-fill{transition-delay:0.34s}
+  :root[data-anima="on"] .vis .bar-row:nth-child(3) .bar-fill{transition-delay:0.45s}
+  :root[data-anima="on"] .vis .bar-row:nth-child(4) .bar-fill{transition-delay:0.56s}
+
+  /* Os 138 representativos acendem em onda sobre o campo apagado. */
+  :root[data-anima="on"] .dots i.rep{background:var(--line); opacity:.45; transition:background-color .55s ease, opacity .55s ease}
+  :root[data-anima="on"] .vis .dots i.rep{background:var(--accent); opacity:1}
+
+  /* As semanas do progresso sobem toda vez que a aba aparece. */
+  @keyframes sobe-barra{from{transform:scaleY(0)} to{transform:none}}
+  :root[data-anima="on"] [role="tabpanel"]:not([hidden]) .ui-mini-bars i{
+    transform-origin:bottom; animation:sobe-barra .6s cubic-bezier(.16,.68,.32,1) both;
+  }
+  :root[data-anima="on"] [role="tabpanel"]:not([hidden]) .ui-mini-bars i:nth-child(1){animation-delay:0.17s}
+  :root[data-anima="on"] [role="tabpanel"]:not([hidden]) .ui-mini-bars i:nth-child(2){animation-delay:0.24s}
+  :root[data-anima="on"] [role="tabpanel"]:not([hidden]) .ui-mini-bars i:nth-child(3){animation-delay:0.31s}
+  :root[data-anima="on"] [role="tabpanel"]:not([hidden]) .ui-mini-bars i:nth-child(4){animation-delay:0.38s}
+  :root[data-anima="on"] [role="tabpanel"]:not([hidden]) .ui-mini-bars i:nth-child(5){animation-delay:0.45s}
+  :root[data-anima="on"] [role="tabpanel"]:not([hidden]) .ui-mini-bars i:nth-child(6){animation-delay:0.52s}
+
+  /* As barras da calculadora partem do zero quando a seção aparece. */
+  :root[data-anima="on"] .res-bar.zerada{width:0 !important; min-width:0; padding-left:0; padding-right:0}
+}
 </style>
 <style>
   .nav-acoes{display:flex; align-items:center; gap:10px}
@@ -313,6 +472,74 @@ footer a{color:var(--ink-2)}
     color:var(--ink-2); cursor:pointer; padding:0; transition:color .15s ease, border-color .15s ease;
   }
   .tema:hover{color:var(--accent); border-color:var(--accent)}
+
+  /* ---------- jornada em passos (aluno e professor) ---------- */
+  .passos{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:16px;
+    list-style:none; margin:0; padding:0;
+  }
+  @media (max-width:940px){.passos{grid-template-columns:1fr 1fr}}
+  @media (max-width:620px){.passos{grid-template-columns:1fr}}
+  .passo{
+    background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+    padding:20px; display:flex; flex-direction:column;
+  }
+  .passo-n{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11.5px; letter-spacing:.06em;
+    color:var(--accent); font-weight:500;
+  }
+  .passo h3{font-size:16.5px; font-weight:600; margin:10px 0 8px}
+  .passo p{font-size:14px; color:var(--ink-2); line-height:1.55}
+
+  /* ---------- seletor de trilha ---------- */
+  .trilhas-box{margin:22px 0 32px}
+  .trilhas-lab{font-size:13.5px; color:var(--ink-3); margin:0 0 10px}
+  .trilhas{
+    position:relative; display:grid; grid-template-columns:1fr 1fr;
+    width:min(330px,100%); padding:4px; border-radius:13px;
+    border:1px solid var(--line-strong); background:var(--surface);
+  }
+  /* A pastilha desliza entre as duas metades, em vez de piscar de um lado para o outro. */
+  .trilhas::before{
+    content:''; position:absolute; top:4px; bottom:4px; left:4px; width:calc(50% - 4px);
+    border-radius:9px; background:var(--accent);
+    transition:transform .38s cubic-bezier(.34,.01,.2,1);
+  }
+  :root[data-trilha="aluno"] .trilhas::before{transform:translateX(100%)}
+  .trilha{
+    position:relative; z-index:1; font:inherit; font-size:14px; font-weight:500; cursor:pointer;
+    padding:10px 8px; border:0; border-radius:9px; background:transparent; color:var(--ink-2);
+    transition:color .3s ease;
+  }
+  .trilha:hover{color:var(--ink)}
+  .trilha[aria-pressed="true"], .trilha[aria-pressed="true"]:hover{color:var(--on-accent)}
+
+  /* Entrada do lado que acabou de aparecer, só quando a pessoa troca de trilha. */
+  @keyframes entra-lado{
+    from{opacity:0; transform:translateY(14px)}
+    to{opacity:1; transform:none}
+  }
+  :root.em-troca[data-trilha="professor"] [data-lado="professor"],
+  :root.em-troca[data-trilha="aluno"] [data-lado="aluno"]{
+    animation:entra-lado .5s cubic-bezier(.16,.68,.32,1) both;
+  }
+
+  /* cartão da persona ativa, na proposta de valor */
+  :root[data-trilha="professor"] .card[data-persona="professor"],
+  :root[data-trilha="aluno"] .card[data-persona="aluno"]{
+    border-color:var(--accent-line); box-shadow:0 0 0 1px var(--accent-line);
+  }
+
+  /* ponte para o outro lado, no fim de cada trilha */
+  .troca{
+    display:flex; align-items:center; gap:8px; flex-wrap:wrap;
+    font-size:14px; color:var(--ink-3); margin-top:24px;
+  }
+  .troca button{
+    font:inherit; font-size:14px; font-weight:500; cursor:pointer; padding:0;
+    border:0; background:none; color:var(--accent); text-decoration:underline;
+    text-underline-offset:3px;
+  }
 </style>
 </head>
 <body>
@@ -320,7 +547,7 @@ footer a{color:var(--ink-2)}
   <div class="wrap nav-in">
     <a class="brand" href="#topo">
       <svg width="26" height="26" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-        <defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#8b5cf6"/><stop offset="1" stop-color="#6d28d9"/></linearGradient></defs>
+        <defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="var(--marca-1)"/><stop offset="1" stop-color="var(--marca-2)"/></linearGradient></defs>
         <rect width="32" height="32" rx="8" fill="url(#lg)"/>
         <g fill="#fff"><rect x="7" y="17" width="4.2" height="9" rx="2.1"/><rect x="13.9" y="12" width="4.2" height="14" rx="2.1"/><rect x="20.8" y="7" width="4.2" height="19" rx="2.1"/></g>
         <polyline points="9.1,14 16,9 22.9,4.5" fill="none" stroke="#fff" stroke-opacity="0.5" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
@@ -331,9 +558,9 @@ footer a{color:var(--ink-2)}
     <nav class="nav-links" aria-label="Seções">
       <a href="#problema">O problema</a>
       <a href="#motor">Como funciona</a>
-      <a href="#diagnostico">Diagnóstico ao vivo</a>
-      <a href="#professor">Para o professor</a>
-      <a href="#calculadora">Calculadora</a>
+      <a href="#aluno" data-ir="aluno">Para o aluno</a>
+      <a href="#professor" data-ir="professor">Para o professor</a>
+      <a href="#calculadora" data-lado="professor">Calculadora</a>
     </nav>
     <div class="nav-acoes">
       <button class="tema" id="tema" type="button" aria-label="Alternar entre tema claro e escuro" title="Alternar tema">
@@ -348,10 +575,21 @@ footer a{color:var(--ink-2)}
 
 <section class="wrap hero">
   <p class="eyebrow">// turma virtual para disciplinas de programação em C</p>
+  <div class="trilhas-box">
+    <p class="trilhas-lab">Escolha o seu lado para ver o que muda:</p>
+    <div class="trilhas" role="group" aria-label="Escolha a sua trilha">
+      <button class="trilha" type="button" data-trilha="professor" aria-pressed="true">Sou professor</button>
+      <button class="trilha" type="button" data-trilha="aluno" aria-pressed="false">Sou aluno</button>
+    </div>
+  </div>
+
   <h1>Errar e<br>entender <em>por quê</em>.</h1>
-  <p class="hero-sub">O corretor da disciplina devolve “não passou nos testes”. Nós devolvemos a causa do erro, o que fazer para corrigir e, do outro lado, a turma inteira agrupada por dificuldade.</p>
+  <p class="hero-sub" data-lado="professor">O seu aluno envia o código e descobre na hora qual foi o erro, por que ele acontece e o que fazer para corrigir. Da mesma correção, você recebe a turma inteira já agrupada por dificuldade.</p>
+  <p class="hero-sub" data-lado="aluno">Você envia o código e descobre na hora qual foi o erro, por que ele acontece e o que fazer para corrigir, em vez de esperar dias pela correção para saber onde travou.</p>
+
   <div class="hero-cta">
-    <a class="btn btn--lg" href="#cadastro">Entrar na lista do piloto</a>
+    <a class="btn btn--lg" href="#cadastro" data-lado="professor">Abrir minha turma no piloto</a>
+    <a class="btn btn--lg" href="#cadastro" data-lado="aluno">Entrar na lista do piloto</a>
     <a class="btn btn--ghost btn--lg" href="#diagnostico">Ver um diagnóstico real</a>
   </div>
   <p class="hero-meta">Gratuito na fase de piloto · roda no navegador, sem instalar compilador, IDE ou container</p>
@@ -366,7 +604,7 @@ footer a{color:var(--ink-2)}
 <span class="c-dim">─── corretor da disciplina ───────────</span>
 Testes    <span class="c-fail">1/3</span>
 Resultado <span class="c-fail">incorreto</span></div>
-        <p class="ui-body" style="margin-top:14px">É tudo o que ele diz. O aluno não sabe se errou a lógica, a sintaxe ou o limite de um laço, então tenta variações quase aleatórias até colar o erro em um assistente de IA.</p>
+        <p class="ui-body" style="margin-top:14px">É tudo o que ele diz. O aluno não sabe se o problema é a lógica, a sintaxe ou o limite de um laço, então tenta variações no escuro até colar o erro em um assistente de IA.</p>
       </div>
     </article>
 
@@ -384,7 +622,7 @@ Resultado <span class="c-fail">incorreto</span></div>
         </div>
         <div class="callout callout--accent">
           <p class="callout-t">O ERRO TEM NOME</p>
-          <p class="callout-b">A mesma categoria vai para o seu painel de erros recorrentes e para o mapa da turma que o professor enxerga.</p>
+          <p class="callout-b">A mesma categoria entra no painel de erros recorrentes do aluno e no mapa da turma que o professor enxerga.</p>
         </div>
       </div>
     </article>
@@ -394,18 +632,18 @@ Resultado <span class="c-fail">incorreto</span></div>
 <section class="wrap" style="padding-bottom:clamp(40px,6vw,72px)">
   <div class="stats">
     <div class="stat"><p class="stat-v">539</p><p class="stat-l">submissões reais de 4 turmas corrigidas pelo motor</p></div>
-    <div class="stat"><p class="stat-v">99,6%</p><p class="stat-l">de concordância com o corretor consolidado da disciplina</p></div>
-    <div class="stat"><p class="stat-v">3,9×</p><p class="stat-l">menos itens para o professor revisar, por agrupamento</p></div>
-    <div class="stat"><p class="stat-v">27</p><p class="stat-l">categorias pedagógicas de erro, auditáveis até a regra</p></div>
+    <div class="stat"><p class="stat-v">99,6%</p><p class="stat-l">de concordância com o corretor já usado na disciplina</p></div>
+    <div class="stat"><p class="stat-v">3,9×</p><p class="stat-l">menos códigos para o professor ler, por agrupamento</p></div>
+    <div class="stat"><p class="stat-v">27</p><p class="stat-l">categorias de erro, cada uma rastreável até a regra</p></div>
   </div>
   <p class="note" style="margin-top:14px">Números medidos na validação do motor contra 539 submissões reais de C, comparadas ao corretor já usado na disciplina. Não são projeções.</p>
 </section>
 
-<section id="problema" class="band band--tint">
+<section id="problema" class="band">
   <div class="wrap">
     <p class="eyebrow">// o problema <span>— o que acontece hoje, às duas da manhã</span></p>
     <h2 class="section-h">O aluno não trava no conteúdo.<br>Ele trava no “errado” sem explicação.</h2>
-    <p class="lede">Ouvimos cinco alunos de disciplina introdutória de programação, um por um, no roteiro de Descoberta do Cliente. A mesma cena apareceu nas cinco conversas.</p>
+    <p class="lede">Entrevistamos cinco alunos de disciplina introdutória de programação, um por um. A mesma cena apareceu nas cinco conversas.</p>
 
     <div class="figbox" style="margin-top:32px">
       <figure class="figure">
@@ -448,7 +686,7 @@ Resultado <span class="c-fail">incorreto</span></div>
           <path d="M795 106 L795 150 L270 150 L270 110" fill="none" stroke="var(--fail)" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#arf)"/>
           <text x="532" y="142" font-family="IBM Plex Mono, monospace" font-size="11" fill="var(--fail)" text-anchor="middle">o mesmo erro reaparece na prova</text>
         </svg>
-        <figcaption>O ciclo se fecha porque nada nele nomeia a causa. Cinco de cinco entrevistados citaram o assistente de IA sem serem perguntados, e quatro disseram que é a primeira coisa que fazem quando o código não passa. Ninguém citou o corretor da disciplina.</figcaption>
+        <figcaption>O ciclo se fecha porque nada nele nomeia a causa. Os cinco entrevistados citaram o assistente de IA sem serem perguntados, e quatro disseram que é a primeira coisa que fazem quando o código não passa. Nenhum citou o corretor da disciplina.</figcaption>
       </figure>
     </div>
 
@@ -474,12 +712,12 @@ Resultado <span class="c-fail">incorreto</span></div>
             <p class="bar-val">0 de 5</p>
           </div>
         </div>
-        <p class="note" style="margin-top:16px">Amostra de 5 entrevistas com alunos, agosto de 2026. O último é problema do professor, e era esperado que nenhum aluno o marcasse.</p>
+        <p class="note" style="margin-top:16px">Amostra de 5 entrevistas com alunos, agosto de 2026. O último item é um problema do professor, e era esperado que nenhum aluno o marcasse.</p>
       </div>
 
       <div class="card">
         <h3>O que isso custa</h3>
-        <p>O custo do problema não é o tempo perdido na questão. É a entrega que não sai e a matéria que se abandona.</p>
+        <p>O custo não é o tempo perdido na questão. É a entrega que não sai e a matéria que se abandona.</p>
         <div class="stack" style="gap:14px; margin-top:20px">
           <div class="ui-card"><p class="ui-h">5 de 5 já deixaram de entregar</p><p class="ui-sub">uma lista ou trabalho por causa de um erro que não saía</p></div>
           <div class="ui-card"><p class="ui-h">5 de 5 já pensaram em trancar</p><p class="ui-sub">e um deles trancou de fato a disciplina</p></div>
@@ -492,35 +730,93 @@ Resultado <span class="c-fail">incorreto</span></div>
 
 <section id="proposta" class="band">
   <div class="wrap">
-    <p class="eyebrow">// proposta de valor</p>
+    <p class="eyebrow">// proposta de valor <span>— uma correção, dois lados</span></p>
     <h2 class="section-h" style="max-width:22ch">O corretor que ensina.</h2>
-    <p class="lede" style="font-size:19px; color:var(--ink)">A turma virtual de CS1 que explica ao aluno a causa do erro, em vez de apenas dizer que o código não passou, e entrega ao professor a turma inteira agrupada por dificuldade. O aluno chega ao acerto com menos tentativas e o professor revisa <b>3,9 vezes menos itens</b>, o que custa menos que ampliar o quadro de monitoria.</p>
+    <p class="lede" style="font-size:19px; color:var(--ink)">O Analytics CS1 corrige o código como um professor corrigiria: dizendo qual é o erro, por que ele acontece e o que fazer em seguida. Essa mesma correção monta, do outro lado, o mapa da turma que o professor usa para decidir o que retomar em aula. O aluno chega ao acerto com menos tentativas e o professor lê <b>3,9 vezes menos códigos</b>.</p>
 
-    <div class="grid-3" style="margin-top:36px">
-      <div class="card">
+    <div class="figbox" style="margin-top:32px">
+      <figure class="figure">
+        <svg viewBox="0 0 900 218" role="img" aria-label="Uma correção alimenta dois ciclos: o do aluno, que envia o código, recebe categoria, causa e correção e tenta de novo, e o do professor, que recebe a turma agrupada por falha, lê um código representativo por grupo e devolve um retorno por grupo.">
+          <defs>
+            <marker id="ar4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+            </marker>
+            <marker id="ar5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"/>
+            </marker>
+          </defs>
+
+          <g fill="none" stroke="currentColor" stroke-opacity=".3">
+            <rect x="10" y="46" width="185" height="62" rx="10"/>
+            <rect x="485" y="46" width="210" height="62" rx="10"/>
+            <rect x="195" y="150" width="210" height="62" rx="10"/>
+            <rect x="440" y="150" width="210" height="62" rx="10"/>
+            <rect x="685" y="150" width="200" height="62" rx="10"/>
+          </g>
+          <rect x="240" y="46" width="200" height="62" rx="10" fill="var(--accent-soft)" stroke="var(--accent)" stroke-opacity=".55"/>
+
+          <g font-family="IBM Plex Sans, sans-serif" font-size="12.5" fill="currentColor" text-anchor="middle">
+            <text x="102" y="74">Aluno envia o código</text>
+            <text x="340" y="74">Motor de correção</text>
+            <text x="590" y="74">O erro ganha nome</text>
+            <text x="785" y="178">Turma agrupada</text>
+            <text x="545" y="178">Um código por grupo</text>
+            <text x="300" y="178">Retorno por grupo</text>
+          </g>
+          <g font-family="IBM Plex Mono, monospace" font-size="10" fill="currentColor" fill-opacity=".65" text-anchor="middle">
+            <text x="102" y="92">sem instalar nada</text>
+            <text x="340" y="92">regras, não palpite</text>
+            <text x="590" y="92">causa e correção</text>
+            <text x="785" y="196">erro igual, mesmo grupo</text>
+            <text x="545" y="196">um código, não 60</text>
+            <text x="300" y="196">em aula ou por escrito</text>
+          </g>
+
+          <g fill="none" stroke="currentColor" stroke-width="1.4" marker-end="url(#ar4)">
+            <line x1="197" y1="77" x2="234" y2="77"/>
+            <line x1="442" y1="77" x2="479" y2="77"/>
+            <line x1="683" y1="181" x2="656" y2="181"/>
+            <line x1="438" y1="181" x2="411" y2="181"/>
+          </g>
+
+          <path d="M590 46 L590 24 L103 24 L103 42" fill="none" stroke="var(--accent)" stroke-width="1.4" stroke-dasharray="4 4" marker-end="url(#ar5)"/>
+          <text x="346" y="16" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--accent)" text-anchor="middle">tenta de novo sabendo o que corrigir</text>
+
+          <path d="M340 108 L340 128 L785 128 L785 146" fill="none" stroke="var(--accent)" stroke-width="1.4" marker-end="url(#ar5)"/>
+          <text x="560" y="121" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--accent)" text-anchor="middle">a mesma correção alimenta o professor</text>
+
+          <path d="M195 181 L103 181 L103 112" fill="none" stroke="var(--accent)" stroke-width="1.4" stroke-dasharray="4 4" marker-end="url(#ar5)"/>
+          <text x="103" y="205" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--accent)" text-anchor="middle">o aluno recebe o retorno</text>
+        </svg>
+        <figcaption>Uma correção, dois destinos. Para o aluno ela vira diagnóstico e caminho de conserto. Para o professor ela vira o agrupamento da turma por assinatura de falha. Nada é corrigido duas vezes e nada é estimado por amostragem.</figcaption>
+      </figure>
+    </div>
+
+    <div class="grid-3" style="margin-top:24px">
+      <div class="card" data-persona="aluno">
         <span class="badge badge--accent">Para o aluno</span>
         <h3 style="margin-top:14px">O erro passa a ter nome</h3>
-        <p>Cada envio volta com a categoria do erro, a causa e o que fazer. O modo treino não limita tentativas, o histórico guarda todos os envios e o painel mostra o padrão que você repete sem perceber.</p>
+        <p>Cada envio volta com a categoria do erro, a causa e o que fazer para corrigir. No modo treino as tentativas são ilimitadas, e o painel mostra o padrão que você repete sem perceber.</p>
       </div>
-      <div class="card">
+      <div class="card" data-persona="professor">
         <span class="badge badge--accent">Para o professor</span>
         <h3 style="margin-top:14px">Uma intervenção por dificuldade</h3>
-        <p>Envie o arquivo da prova e receba as questões e os casos de teste prontos. As submissões chegam agrupadas por assinatura de falha: você lê um código representativo e responde ao grupo inteiro de uma vez.</p>
+        <p>Suba o arquivo da prova e receba as questões e os casos de teste prontos. As submissões chegam agrupadas por assinatura de falha, e você responde ao grupo inteiro de uma vez.</p>
       </div>
-      <div class="card">
+      <div class="card" data-persona="coordenacao">
         <span class="badge badge--accent">Para a coordenação</span>
         <h3 style="margin-top:14px">Evidência antes da reprovação</h3>
-        <p>Onde a turma trava aparece durante o semestre, e não na planilha de notas depois dele. Custo por aluno previsível e comparável direto com o de uma bolsa de monitoria.</p>
+        <p>Onde a turma trava aparece durante o semestre, não na planilha de notas depois dele. O custo por aluno é previsível e comparável direto com o de uma bolsa de monitoria.</p>
       </div>
     </div>
   </div>
 </section>
 
-<section id="motor" class="band band--tint">
+<section id="motor" class="band">
   <div class="wrap">
     <p class="eyebrow">// como funciona <span>— o motor por dentro</span></p>
     <h2 class="section-h">Um funil determinístico.<br>A IA explica, nunca decide a nota.</h2>
-    <p class="lede">Todo veredito é rastreável até a regra que o produziu. É isso que sustenta a confiança do professor em expor a turma ao sistema, e é a diferença entre um diagnóstico e um palpite bem escrito.</p>
+    <p class="lede">Todo veredito é rastreável até a regra que o produziu. É o que sustenta a confiança do professor em expor a turma ao sistema, e é a diferença entre um diagnóstico e um palpite bem escrito.</p>
 
     <div class="figbox" style="margin-top:32px">
       <figure class="figure">
@@ -569,14 +865,14 @@ Resultado <span class="c-fail">incorreto</span></div>
           </g>
           <path d="M810 154 L810 192" fill="none" stroke="var(--accent)" stroke-width="1.4" stroke-dasharray="4 4" marker-end="url(#ar3)"/>
         </svg>
-        <figcaption>A nota e a categoria saem das regras, não do modelo de linguagem. O modelo entra depois do veredito pronto, e só para transformá-lo em uma explicação sobre o código daquele aluno — quando ele pede.</figcaption>
+        <figcaption>A nota e a categoria saem das regras, não do modelo de linguagem. O modelo entra depois do veredito pronto, e só para transformá-lo em uma explicação sobre o código daquele aluno, quando ele pede.</figcaption>
       </figure>
     </div>
 
     <div class="grid-3" style="margin-top:24px">
       <div class="card">
         <h3>Adaptativo por questão</h3>
-        <p>Não existem “modos de correção”. Cada questão declara o que exige — recursão, ponteiro, laço proibido — e só os verificadores relevantes disparam.</p>
+        <p>Não existem “modos de correção”. Cada questão declara o que exige, como recursão, ponteiro ou um laço proibido, e só os verificadores relevantes disparam.</p>
       </div>
       <div class="card">
         <h3>Execução segura</h3>
@@ -636,148 +932,174 @@ Resultado <span class="c-fail">incorreto</span></div>
   </div>
 </section>
 
-<section id="telas" class="band band--tint">
+<section id="aluno" class="band" data-lado="aluno">
   <div class="wrap">
-    <p class="eyebrow">// o produto <span>— telas do protótipo em uso</span></p>
-    <h2 class="section-h">Três telas fecham o ciclo.</h2>
-    <p class="lede">O aluno resolve e entende. O painel mostra o que ele repete. O professor vê a turma inteira colapsada em grupos de mesmo sintoma.</p>
+    <p class="eyebrow">// para o aluno <span>— do envio ao entendimento</span></p>
+    <h2 class="section-h">Nenhum envio volta só com “incorreto”.</h2>
+    <p class="lede">Você entra com o código que o professor mandou, resolve as questões no navegador e recebe, a cada tentativa, o nome do erro e o caminho para consertar. O que você não recebe é o código pronto.</p>
 
-    <div class="tabs" role="tablist" aria-label="Telas do produto" style="margin-top:28px">
-      <button class="tab" role="tab" id="tb-1" aria-controls="tp-1" aria-selected="true">Questão e diagnóstico</button>
-      <button class="tab" role="tab" id="tb-2" aria-controls="tp-2" aria-selected="false">Meu progresso</button>
-      <button class="tab" role="tab" id="tb-3" aria-controls="tp-3" aria-selected="false">Painel do professor</button>
-    </div>
+    <ol class="passos" style="margin-top:32px">
+      <li class="passo">
+        <p class="passo-n">passo 1</p>
+        <h3>Entre com o código da turma</h3>
+        <p>O professor divulga um código de acesso. Você cria a conta, digita o código e a turma aparece com as listas e as provas já publicadas.</p>
+      </li>
+      <li class="passo">
+        <p class="passo-n">passo 2</p>
+        <h3>Resolva pelo navegador</h3>
+        <p>Escreva o C na própria página, sem compilador nem IDE na máquina. No modo treino as tentativas são ilimitadas. No modo prova valem a janela e o limite que o professor definiu.</p>
+      </li>
+      <li class="passo">
+        <p class="passo-n">passo 3</p>
+        <h3>Receba o erro com nome</h3>
+        <p>A resposta traz a categoria do erro, a causa em português, a linha culpada e o que fazer. Se ainda não ficou claro, o botão “explicar meu erro” escreve a explicação sobre o seu código.</p>
+      </li>
+      <li class="passo">
+        <p class="passo-n">passo 4</p>
+        <h3>Veja o que você repete</h3>
+        <p>O histórico guarda todas as tentativas e o painel junta os erros por categoria, mostrando o que está melhorando e o que voltou a aparecer nas últimas semanas.</p>
+      </li>
+    </ol>
 
-    <div class="frame">
-      <div class="frame-bar">
-        <span class="dot" style="background:#e2564a"></span><span class="dot" style="background:#e8b53f"></span><span class="dot" style="background:#4fb56a"></span>
-        <span class="frame-url" id="frame-url">analyticscs1.app/aluno/atividades/12/questoes/2</span>
+    <div class="telas" data-telas style="margin-top:28px">
+      <div class="tabs" role="tablist" aria-label="Telas do aluno">
+        <button class="tab" role="tab" id="tb-a1" aria-controls="tp-a1" aria-selected="true" data-url="analyticscs1.app/aluno/atividades/12/questoes/2">Questão e diagnóstico</button>
+        <button class="tab" role="tab" id="tb-a2" aria-controls="tp-a2" aria-selected="false" data-url="analyticscs1.app/aluno/progresso">Meu progresso</button>
       </div>
 
-      <div class="screen" role="tabpanel" id="tp-1" aria-labelledby="tb-1">
-        <div class="ui-nav"><b>Analytics CS1</b><span class="ui-link on">Turmas</span><span class="ui-link">Meu progresso</span><span class="ui-spread">Lucas M.</span></div>
-        <div>
-          <p class="ui-sub">← Lista 3 · Vetores e laços</p>
-          <div class="ui-row" style="margin-top:8px">
-            <h4 style="font-size:19px; font-weight:600">Questão 2</h4>
-            <span class="badge badge--mute">modo treino · tentativas ilimitadas</span>
+      <div class="frame">
+        <div class="frame-bar">
+          <span class="dot" style="background:#e2564a"></span><span class="dot" style="background:#e8b53f"></span><span class="dot" style="background:#4fb56a"></span>
+          <span class="frame-url">analyticscs1.app/aluno/atividades/12/questoes/2</span>
+        </div>
+
+        <div class="screen" role="tabpanel" id="tp-a1" aria-labelledby="tb-a1">
+          <div class="ui-nav"><b>Analytics CS1</b><span class="ui-link on">Turmas</span><span class="ui-link">Meu progresso</span><span class="ui-spread">Lucas M.</span></div>
+          <div>
+            <p class="ui-sub">← Lista 3 · Vetores e laços</p>
+            <div class="ui-row" style="margin-top:8px">
+              <h4 style="font-size:19px; font-weight:600">Questão 2</h4>
+              <span class="badge badge--mute">modo treino · tentativas ilimitadas</span>
+            </div>
           </div>
-        </div>
-        <div class="ui-card">
-          <p class="ui-body">Leia <code>n</code> e depois <code>n</code> inteiros. Imprima a soma dos elementos lidos.</p>
-          <p class="ui-sub" style="margin-top:8px">Estruturas obrigatórias: <span style="color:var(--accent)">for</span></p>
-        </div>
-        <div class="ui-card">
-          <p class="ui-label">SEU CÓDIGO EM C</p>
-          <div class="ui-code">int soma = 0;
+          <div class="ui-card">
+            <p class="ui-body">Leia <code>n</code> e depois <code>n</code> inteiros. Imprima a soma dos elementos lidos.</p>
+            <p class="ui-sub" style="margin-top:8px">Estruturas obrigatórias: <span style="color:var(--accent)">for</span></p>
+          </div>
+          <div class="ui-card">
+            <p class="ui-label">SEU CÓDIGO EM C</p>
+            <div class="ui-code">int soma = 0;
 for (int i = 0; i &lt;= n; i++) {
     soma += v[i];
 }
 printf("%d\n", soma);</div>
-          <span class="ui-btn">Enviar nova tentativa</span>
-        </div>
-        <p class="ui-h">Resultado</p>
-        <div class="ui-card">
-          <div class="ui-row" style="margin-bottom:10px">
-            <span class="badge badge--fail">Acesso Fora dos Limites: Off-by-One</span>
-            <span class="ui-spread">tentativa 2 · 01/09 às 02:14</span>
+            <span class="ui-btn">Enviar nova tentativa</span>
           </div>
-          <p class="ui-body">O laço usa <code>&lt;=</code> como limite e indexa um vetor com a variável <code>i</code>. Em C os índices válidos vão de 0 a tamanho−1, então <code>&lt;=</code> costuma acessar uma posição além do fim do vetor (erro off-by-one).</p>
-          <div class="callout callout--info">
-            <p class="callout-t">O QUE FAZER</p>
-            <p class="callout-b">Troque <code>&lt;=</code> por <code>&lt;</code> na condição do laço, ou aumente o tamanho do vetor declarado.</p>
+          <p class="ui-h">Resultado</p>
+          <div class="ui-card">
+            <div class="ui-row" style="margin-bottom:10px">
+              <span class="badge badge--fail">Acesso Fora dos Limites: Off-by-One</span>
+              <span class="ui-spread">tentativa 2 · 01/09 às 02:14</span>
+            </div>
+            <p class="ui-body">O laço usa <code>&lt;=</code> como limite e indexa um vetor com a variável <code>i</code>. Em C os índices válidos vão de 0 a tamanho−1, então <code>&lt;=</code> costuma acessar uma posição além do fim do vetor (erro off-by-one).</p>
+            <div class="callout callout--info">
+              <p class="callout-t">O QUE FAZER</p>
+              <p class="callout-b">Troque <code>&lt;=</code> por <code>&lt;</code> na condição do laço, ou aumente o tamanho do vetor declarado.</p>
+            </div>
+            <div class="ui-row" style="margin-top:12px"><span class="badge badge--accent">Explicar meu erro</span><span class="ui-sub">explicação sob demanda, sobre o seu código</span></div>
           </div>
-          <div class="ui-row" style="margin-top:12px"><span class="badge badge--accent">Explicar meu erro</span><span class="ui-sub">explicação sob demanda, sobre o seu código</span></div>
-        </div>
-        <div class="ui-card">
-          <p class="ui-h" style="margin-bottom:10px">Testes: 2/3 passaram</p>
-          <div class="stack" style="gap:8px">
-            <div class="ui-test ui-test--ok">✓ Correto <span>entrada: 3 / 1 2 3</span> <span>esperado: 6</span> <span>obtido: 6</span></div>
-            <div class="ui-test ui-test--fail">✗ Incorreto <span>entrada: 4 / 5 5 5 5</span> <span>esperado: 20</span> <span>obtido: 20034</span></div>
+          <div class="ui-card">
+            <p class="ui-h" style="margin-bottom:10px">Testes: 2/3 passaram</p>
+            <div class="stack" style="gap:8px">
+              <div class="ui-test ui-test--ok">✓ Correto <span>entrada: 3 / 1 2 3</span> <span>esperado: 6</span> <span>obtido: 6</span></div>
+              <div class="ui-test ui-test--fail">✗ Incorreto <span>entrada: 4 / 5 5 5 5</span> <span>esperado: 20</span> <span>obtido: 20034</span></div>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="screen" role="tabpanel" id="tp-2" aria-labelledby="tb-2" hidden>
-        <div class="ui-nav"><b>Analytics CS1</b><span class="ui-link">Turmas</span><span class="ui-link on">Meu progresso</span><span class="ui-spread">Lucas M.</span></div>
-        <div>
-          <h4 style="font-size:19px; font-weight:600">Meu progresso</h4>
-          <p class="ui-sub">O que suas tentativas mostram sobre o que você já domina e o que ainda trava.</p>
-        </div>
-        <div class="ui-kpis">
-          <div class="ui-kpi"><p class="k-l">Questões resolvidas</p><p class="k-v">14/20</p><p class="k-s">3 de 4 atividades concluídas</p></div>
-          <div class="ui-kpi"><p class="k-l">Tentativas até acertar</p><p class="k-v">2,4</p><p class="k-s">média nas questões que você resolveu</p></div>
-          <div class="ui-kpi"><p class="k-l">Acertos de primeira</p><p class="k-v">6</p><p class="k-s">questões resolvidas no primeiro envio</p></div>
-          <div class="ui-kpi"><p class="k-l">Dias seguidos</p><p class="k-v">5</p><p class="k-s">47 tentativas no total</p></div>
-        </div>
-        <div class="ui-card">
-          <p class="ui-h">Semana a semana</p>
-          <p class="ui-sub">Tentativas enviadas e questões resolvidas pela primeira vez.</p>
-          <div class="ui-mini-bars"><i style="height:38%"></i><i style="height:62%"></i><i style="height:48%"></i><i style="height:88%"></i><i style="height:70%"></i><i style="height:100%"></i></div>
-        </div>
-        <p class="ui-h">Erros que se repetem</p>
-        <div class="ui-card">
-          <div class="ui-row">
-            <span class="ui-h" style="margin:0">Off-by-one</span><span class="badge badge--ok">melhorando</span>
-            <span class="ui-spread">7× · 1 nas últimas tentativas</span>
+        <div class="screen" role="tabpanel" id="tp-a2" aria-labelledby="tb-a2" hidden>
+          <div class="ui-nav"><b>Analytics CS1</b><span class="ui-link">Turmas</span><span class="ui-link on">Meu progresso</span><span class="ui-spread">Lucas M.</span></div>
+          <div>
+            <h4 style="font-size:19px; font-weight:600">Meu progresso</h4>
+            <p class="ui-sub">O que suas tentativas mostram sobre o que você já domina e o que ainda trava.</p>
           </div>
-          <div class="callout callout--info"><p class="callout-b">Em C os índices vão de 0 a tamanho−1. Confira a condição de parada dos seus laços antes de enviar.</p></div>
-          <p class="ui-sub" style="margin-top:8px">Aconteceu em: Lista 2 · Q4 · Lista 3 · Q2</p>
-        </div>
-        <div class="ui-card">
-          <div class="ui-row">
-            <span class="ui-h" style="margin:0">Tudo no main</span><span class="badge badge--fail">em alta</span>
-            <span class="ui-spread">4× · 3 nas últimas tentativas</span>
+          <div class="ui-kpis">
+            <div class="ui-kpi"><p class="k-l">Questões resolvidas</p><p class="k-v">14/20</p><p class="k-s">3 de 4 atividades concluídas</p></div>
+            <div class="ui-kpi"><p class="k-l">Tentativas até acertar</p><p class="k-v">2,4</p><p class="k-s">média nas questões que você resolveu</p></div>
+            <div class="ui-kpi"><p class="k-l">Acertos de primeira</p><p class="k-v">6</p><p class="k-s">questões resolvidas no primeiro envio</p></div>
+            <div class="ui-kpi"><p class="k-l">Dias seguidos</p><p class="k-v">5</p><p class="k-s">47 tentativas no total</p></div>
           </div>
-          <div class="callout callout--info"><p class="callout-b">Extraia a lógica para a função pedida no enunciado, com o nome e a assinatura corretos.</p></div>
-          <p class="ui-sub" style="margin-top:8px">Aconteceu em: Lista 3 · Q1 · Lista 3 · Q5</p>
-        </div>
-      </div>
-
-      <div class="screen" role="tabpanel" id="tp-3" aria-labelledby="tb-3" hidden>
-        <div class="ui-nav"><b>Analytics CS1</b><span class="ui-link">Turmas</span><span class="ui-link on">Prova 1 · Questão 3</span><span class="ui-spread">Prof. Ricardo</span></div>
-        <div class="ui-row">
-          <h4 style="font-size:19px; font-weight:600">Grupos de dificuldade</h4>
-          <span class="ui-spread">6 grupos em 58 submissões</span>
-        </div>
-        <div class="ui-card">
-          <div class="ui-row" style="margin-bottom:10px">
-            <span class="dot" style="background:#7c3aed"></span><span class="badge badge--fail">Acesso Fora dos Limites: Off-by-One</span>
-            <span class="ui-sub">· falha no teste 2</span><span class="ui-spread">19 alunos · 33%</span>
+          <div class="ui-card">
+            <p class="ui-h">Semana a semana</p>
+            <p class="ui-sub">Tentativas enviadas e questões resolvidas pela primeira vez.</p>
+            <div class="ui-mini-bars"><i style="height:38%"></i><i style="height:62%"></i><i style="height:48%"></i><i style="height:88%"></i><i style="height:70%"></i><i style="height:100%"></i></div>
           </div>
-          <p class="ui-body" style="border-left:2px solid var(--accent-line); padding-left:12px">Este grupo percorre o vetor até <code>i &lt;= n</code> e lê uma posição além do fim. Vale retomar em aula que os índices vão de 0 a n−1, usando o próprio código representativo abaixo.</p>
-          <div class="ui-row" style="margin-top:12px">
-            <span class="chip">2023001</span><span class="chip">2023014</span><span class="chip">2023022</span><span class="chip">2023031</span><span class="chip">+15</span>
+          <p class="ui-h">Erros que se repetem</p>
+          <div class="ui-card">
+            <div class="ui-row">
+              <span class="ui-h" style="margin:0">Off-by-one</span><span class="badge badge--ok">melhorando</span>
+              <span class="ui-spread">7× · 1 nas últimas tentativas</span>
+            </div>
+            <div class="callout callout--info"><p class="callout-b">Em C os índices vão de 0 a tamanho−1. Confira a condição de parada dos seus laços antes de enviar.</p></div>
+            <p class="ui-sub" style="margin-top:8px">Aconteceu em: Lista 2 · Q4 · Lista 3 · Q2</p>
           </div>
-          <p class="ui-sub" style="margin-top:10px">+ Ver código representativo <span style="color:var(--fail)">· linha 7 em destaque</span></p>
-        </div>
-        <div class="ui-card">
-          <div class="ui-row" style="margin-bottom:10px">
-            <span class="dot" style="background:#e2564a"></span><span class="badge badge--fail">Tudo no Main</span>
-            <span class="ui-spread">12 alunos · 21%</span>
-          </div>
-          <p class="ui-body" style="border-left:2px solid var(--accent-line); padding-left:12px">Resolveram corretamente, mas dentro do <code>main</code>, sem a função <code>soma_vetor</code> exigida no enunciado. A lógica está certa: o que falta é modularizar.</p>
-          <div class="ui-row" style="margin-top:12px"><span class="chip">2023007</span><span class="chip">2023018</span><span class="chip">+10</span></div>
-        </div>
-        <div class="ui-card">
-          <div class="ui-row">
-            <span class="dot" style="background:#4fb56a"></span><span class="badge badge--ok">Correto</span>
-            <span class="ui-spread">21 alunos · 36%</span>
+          <div class="ui-card">
+            <div class="ui-row">
+              <span class="ui-h" style="margin:0">Tudo no main</span><span class="badge badge--fail">em alta</span>
+              <span class="ui-spread">4× · 3 nas últimas tentativas</span>
+            </div>
+            <div class="callout callout--info"><p class="callout-b">Extraia a lógica para a função pedida no enunciado, com o nome e a assinatura corretos.</p></div>
+            <p class="ui-sub" style="margin-top:8px">Aconteceu em: Lista 3 · Q1 · Lista 3 · Q5</p>
           </div>
         </div>
       </div>
     </div>
-    <p class="note" style="margin-top:16px">Telas do protótipo em funcionamento, com dados de exemplo. O agrupamento e o diagnóstico são os mesmos validados nas 539 submissões reais.</p>
+
+    <div class="grid-2" style="margin-top:24px">
+      <div class="card">
+        <h3>O diagnóstico não entrega a solução</h3>
+        <p>O sistema diz onde está o erro e o que fazer, mas quem escreve a correção é você. É a diferença entre o retorno de um monitor e o código pronto que um assistente de IA cospe.</p>
+      </div>
+      <div class="card">
+        <h3>O mesmo diagnóstico durante o semestre inteiro</h3>
+        <p>As categorias são as mesmas na lista de exercícios e na prova, então o erro que você viu na segunda semana tem o mesmo nome quando reaparece na avaliação.</p>
+      </div>
+    </div>
+
+    <p class="troca">Dá aula na disciplina? <button type="button" data-ir="professor">Ver a trilha do professor</button></p>
   </div>
 </section>
 
-<section id="professor" class="band">
+<section id="professor" class="band" data-lado="professor">
   <div class="wrap">
-    <p class="eyebrow">// para o professor <span>— o mesmo lote, dois trabalhos diferentes</span></p>
-    <h2 class="section-h">539 submissões viram 138 leituras.</h2>
-    <p class="lede">O agrupamento não amostra nem descarta nada: todas as submissões continuam corrigidas, uma a uma. O que muda é quantos códigos o professor precisa ler para entender a turma inteira. Quem erra do mesmo jeito cai no mesmo grupo, e a intervenção sai uma vez por dificuldade.</p>
+    <p class="eyebrow">// para o professor <span>— do arquivo da prova à intervenção</span></p>
+    <h2 class="section-h">Você lê 138 códigos, não 539.</h2>
+    <p class="lede">O agrupamento não amostra nem descarta nada, porque todas as submissões continuam corrigidas uma a uma. O que muda é quantos códigos você precisa abrir para entender a turma inteira. Quem erra do mesmo jeito cai no mesmo grupo, e a intervenção sai uma vez por dificuldade.</p>
 
-    <div class="figbox" style="margin-top:32px">
+    <ol class="passos" style="margin-top:32px">
+      <li class="passo">
+        <p class="passo-n">passo 1</p>
+        <h3>Suba o arquivo da prova</h3>
+        <p>O enunciado entra como está. O sistema separa as questões e monta os casos de teste, e você revisa tudo antes de publicar. Ninguém cadastra questão a questão nem digita entrada e saída à mão.</p>
+      </li>
+      <li class="passo">
+        <p class="passo-n">passo 2</p>
+        <h3>Abra a turma com um código</h3>
+        <p>Você cria a turma, define treino ou prova com janela e limite de tentativas, e manda o código de acesso no grupo. Sem pedido à TI, sem laboratório e sem substituir o Moodle.</p>
+      </li>
+      <li class="passo">
+        <p class="passo-n">passo 3</p>
+        <h3>Receba a turma agrupada</h3>
+        <p>As submissões chegam separadas por assinatura de falha. Cada grupo mostra o código representativo, as linhas culpadas e a lista de quem está nele, então o veredito da máquina fica exposto para você conferir.</p>
+      </li>
+      <li class="passo">
+        <p class="passo-n">passo 4</p>
+        <h3>Responda uma vez por grupo</h3>
+        <p>Em vez de escrever 60 retornos parecidos, você retoma em aula ou responde por escrito ao grupo inteiro, e ainda vê quais dificuldades atravessam a turma de uma prova para a outra.</p>
+      </li>
+    </ol>
+
+    <div class="figbox" style="margin-top:28px">
       <figure class="figure">
         <div class="grid-2" style="gap:28px">
           <div>
@@ -789,32 +1111,99 @@ printf("%d\n", soma);</div>
             <div class="dots" id="dots-b" aria-hidden="true"></div>
           </div>
         </div>
-        <figcaption>Cada quadrado é uma submissão real do conjunto de validação. À direita, os 138 destacados são os códigos representativos que o professor abre — um por assinatura de falha. Os demais recebem a mesma resposta, porque falharam do mesmo jeito. Redução medida: 3,91×.</figcaption>
+        <figcaption>Cada quadrado é uma submissão real do conjunto de validação. À direita, os 138 destacados são os códigos que o professor abre, um por assinatura de falha. Os demais recebem a mesma resposta, porque falharam do mesmo jeito. Redução medida: 3,91×.</figcaption>
       </figure>
     </div>
 
-    <div class="grid-3" style="margin-top:24px">
-      <div class="card">
-        <h3>A prova entra pronta</h3>
-        <p>Envie o arquivo do enunciado. As questões saem separadas, com os casos de teste montados, sem cadastrar uma a uma nem escrever entrada e saída à mão.</p>
+    <div class="telas" data-telas style="margin-top:28px">
+      <div class="tabs" role="tablist" aria-label="Telas do professor">
+        <button class="tab" role="tab" id="tb-p1" aria-controls="tp-p1" aria-selected="true" data-url="analyticscs1.app/exam/12/questions/3">Grupos de dificuldade</button>
+        <button class="tab" role="tab" id="tb-p2" aria-controls="tp-p2" aria-selected="false" data-url="analyticscs1.app/exam/novo">Montagem da prova</button>
       </div>
-      <div class="card">
-        <h3>Você confere antes de confiar</h3>
-        <p>Cada grupo mostra o código representativo, as linhas culpadas e quem está nele. O veredito da máquina fica exposto para você revisar, não escondido atrás de uma nota.</p>
-      </div>
-      <div class="card">
-        <h3>Convive com o Moodle</h3>
-        <p>Não substitui o ambiente virtual da instituição e não depende da TI para começar: você cria a turma, manda o código de acesso e usa.</p>
+
+      <div class="frame">
+        <div class="frame-bar">
+          <span class="dot" style="background:#e2564a"></span><span class="dot" style="background:#e8b53f"></span><span class="dot" style="background:#4fb56a"></span>
+          <span class="frame-url">analyticscs1.app/exam/12/questions/3</span>
+        </div>
+
+        <div class="screen" role="tabpanel" id="tp-p1" aria-labelledby="tb-p1">
+          <div class="ui-nav"><b>Analytics CS1</b><span class="ui-link">Turmas</span><span class="ui-link on">Prova 1 · Questão 3</span><span class="ui-spread">Prof. Ricardo</span></div>
+          <div class="ui-row">
+            <h4 style="font-size:19px; font-weight:600">Grupos de dificuldade</h4>
+            <span class="ui-spread">6 grupos em 58 submissões</span>
+          </div>
+          <div class="ui-card">
+            <div class="ui-row" style="margin-bottom:10px">
+              <span class="dot" style="background:#7c3aed"></span><span class="badge badge--fail">Acesso Fora dos Limites: Off-by-One</span>
+              <span class="ui-sub">· falha no teste 2</span><span class="ui-spread">19 alunos · 33%</span>
+            </div>
+            <p class="ui-body" style="border-left:2px solid var(--accent-line); padding-left:12px">Este grupo percorre o vetor até <code>i &lt;= n</code> e lê uma posição além do fim. Vale retomar em aula que os índices vão de 0 a n−1, usando o próprio código representativo abaixo.</p>
+            <div class="ui-row" style="margin-top:12px">
+              <span class="chip">2023001</span><span class="chip">2023014</span><span class="chip">2023022</span><span class="chip">2023031</span><span class="chip">+15</span>
+            </div>
+            <p class="ui-sub" style="margin-top:10px">+ Ver código representativo <span style="color:var(--fail)">· linha 7 em destaque</span></p>
+          </div>
+          <div class="ui-card">
+            <div class="ui-row" style="margin-bottom:10px">
+              <span class="dot" style="background:#e2564a"></span><span class="badge badge--fail">Tudo no Main</span>
+              <span class="ui-spread">12 alunos · 21%</span>
+            </div>
+            <p class="ui-body" style="border-left:2px solid var(--accent-line); padding-left:12px">Resolveram corretamente, mas dentro do <code>main</code>, sem a função <code>soma_vetor</code> exigida no enunciado. A lógica está certa: o que falta é modularizar.</p>
+            <div class="ui-row" style="margin-top:12px"><span class="chip">2023007</span><span class="chip">2023018</span><span class="chip">+10</span></div>
+          </div>
+          <div class="ui-card">
+            <div class="ui-row">
+              <span class="dot" style="background:#4fb56a"></span><span class="badge badge--ok">Correto</span>
+              <span class="ui-spread">21 alunos · 36%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="screen" role="tabpanel" id="tp-p2" aria-labelledby="tb-p2" hidden>
+          <div class="ui-nav"><b>Analytics CS1</b><span class="ui-link on">Nova prova</span><span class="ui-link">Turmas</span><span class="ui-spread">Prof. Ricardo</span></div>
+          <div>
+            <h4 style="font-size:19px; font-weight:600">Prova 1 · leitura do enunciado</h4>
+            <p class="ui-sub">O arquivo virou questões e casos de teste. Revise antes de publicar para a turma.</p>
+          </div>
+          <div class="ui-card">
+            <div class="ui-row"><span class="badge badge--ok">arquivo lido</span><span class="ui-sub">prova1_2026.pdf · 3 questões encontradas</span></div>
+          </div>
+          <div class="ui-card">
+            <div class="ui-row" style="margin-bottom:8px">
+              <span class="ui-h" style="margin:0">Questão 3 · soma de vetor</span>
+              <span class="ui-spread">vale 3,0 na nota</span>
+            </div>
+            <p class="ui-body">Leia <code>n</code> e depois <code>n</code> inteiros. Imprima a soma dos elementos lidos, usando a função <code>soma_vetor</code>.</p>
+            <p class="ui-sub" style="margin-top:10px">Exigências detectadas: <span style="color:var(--accent)">for</span> · <span style="color:var(--accent)">função soma_vetor</span></p>
+            <div class="stack" style="gap:8px; margin-top:12px">
+              <div class="ui-test ui-test--mute">caso 1 <span>entrada: 3 / 1 2 3</span> <span>saída: 6</span></div>
+              <div class="ui-test ui-test--mute">caso 2 <span>entrada: 4 / 5 5 5 5</span> <span>saída: 20</span></div>
+              <div class="ui-test ui-test--mute">caso 3 <span>entrada: 1 / 0</span> <span>saída: 0</span></div>
+            </div>
+            <span class="ui-btn">Publicar para a turma</span>
+          </div>
+          <div class="ui-card">
+            <div class="ui-row">
+              <span class="ui-h" style="margin:0">Modo da atividade</span>
+              <span class="badge badge--mute">prova · janela de 2 h · 3 tentativas</span>
+            </div>
+            <p class="ui-sub" style="margin-top:8px">No modo treino, a mesma prova vira lista com tentativas ilimitadas e sem janela.</p>
+          </div>
+        </div>
       </div>
     </div>
+    <p class="note" style="margin-top:16px">Telas do protótipo em funcionamento, com dados de exemplo. O agrupamento e o diagnóstico são os mesmos validados nas 539 submissões reais.</p>
+
+    <p class="troca">Faz a disciplina como aluno? <button type="button" data-ir="aluno">Ver a trilha do aluno</button></p>
   </div>
 </section>
 
-<section id="calculadora" class="band band--tint">
+<section id="calculadora" class="band" data-lado="professor">
   <div class="wrap">
     <p class="eyebrow">// ferramenta interativa <span>— calculadora de esforço</span></p>
     <h2 class="section-h">Quanto da sua correção volta para você.</h2>
-    <p class="lede">Ajuste sua turma e veja a conta. O fator de agrupamento é o medido na validação, 3,91×, e vale para turmas cujas falhas se repetem — que é o caso de toda turma de CS1.</p>
+    <p class="lede">Ajuste os números da sua turma e veja a conta. O fator de agrupamento é o medido na validação, 3,91×, e vale para turmas cujas falhas se repetem, que é o caso de toda turma de CS1.</p>
 
     <div class="figbox calc" style="margin-top:32px">
       <form id="calc" aria-label="Calculadora de esforço de correção">
@@ -850,7 +1239,7 @@ printf("%d\n", soma);</div>
           <b id="calc-save">15 horas por prova</b>
           <p class="ui-body" id="calc-sem"></p>
         </div>
-        <p class="note">A conta usa só o tempo de leitura de código. Não entram a montagem da prova, que o sistema também automatiza, nem o retorno individual, que hoje simplesmente não acontece por falta de tempo.</p>
+        <p class="note">A conta usa só o tempo de leitura de código. Não entram a montagem da prova, que o sistema também automatiza, nem o retorno individual, que hoje não acontece por falta de tempo.</p>
       </div>
     </div>
   </div>
@@ -860,7 +1249,7 @@ printf("%d\n", soma);</div>
   <div class="wrap">
     <p class="eyebrow">// contra o que estamos</p>
     <h2 class="section-h">Nenhum concorrente cobra. Nenhum explica.</h2>
-    <p class="lede">O mercado de correção automática já existe e é gratuito, então o preço não é o eixo da disputa. A disputa é por um atributo que hoje ninguém entrega. Nas entrevistas, o concorrente que apareceu cinco vezes em cinco não foi o corretor do Moodle: foi o assistente de IA.</p>
+    <p class="lede">O mercado de correção automática já existe e é gratuito, então o preço não é o eixo da disputa. A disputa é por um atributo que hoje ninguém entrega. Nas entrevistas, o concorrente que apareceu cinco vezes em cinco não foi o corretor do Moodle, foi o assistente de IA.</p>
 
     <div class="cmp-wrap" style="margin-top:32px">
       <table class="cmp">
@@ -917,7 +1306,7 @@ printf("%d\n", soma);</div>
   </div>
 </section>
 
-<section id="depoimentos" class="band band--tint">
+<section id="depoimentos" class="band">
   <div class="wrap">
     <p class="eyebrow">// quem já viu funcionando</p>
     <h2 class="section-h">Falas da primeira rodada de campo.</h2>
@@ -940,7 +1329,7 @@ printf("%d\n", soma);</div>
         <cite><b>Aluna que estuda por exercício e gabarito</b>Única da amostra que declarou uso semanal, e disse o motivo sem ser perguntada.</cite>
       </figure>
     </div>
-    <p class="note" style="margin-top:18px">Falas registradas nas entrevistas de Descoberta do Cliente, agosto de 2026. As conversas foram anônimas, por isso identificamos cada pessoa pelo perfil. Ainda não entrevistamos professores: quando isso acontecer, as falas deles entram aqui do mesmo jeito.</p>
+    <p class="note" style="margin-top:18px">Falas registradas nas entrevistas de Descoberta do Cliente, agosto de 2026. As conversas foram anônimas, por isso identificamos cada pessoa pelo perfil. Ainda não entrevistamos professores, e quando isso acontecer as falas deles entram aqui do mesmo jeito.</p>
   </div>
 </section>
 
@@ -950,8 +1339,12 @@ printf("%d\n", soma);</div>
       <div class="grid-2" style="gap:clamp(24px,4vw,48px); align-items:start">
         <div>
           <p class="eyebrow">// piloto do semestre</p>
-          <h2 class="section-h" style="font-size:clamp(26px,3.2vw,36px)">Abra sua turma no piloto.</h2>
-          <p class="lede" style="margin-top:16px">Professor entra com a própria turma: cria a conta, sobe o arquivo da prova e manda o código de acesso no grupo. Aluno entra com o código que o professor mandar — ou pela lista, para avisarmos quando a entrada sem turma abrir.</p>
+          <h2 class="section-h" style="font-size:clamp(26px,3.2vw,36px)" data-lado="professor">Abra sua turma no piloto.</h2>
+          <h2 class="section-h" style="font-size:clamp(26px,3.2vw,36px)" data-lado="aluno">Entre na lista do piloto.</h2>
+          <div class="stack" style="gap:14px; margin-top:18px">
+            <p class="lede" style="margin:0" data-lado="professor">Você cria a conta, sobe o arquivo da prova e manda o código de acesso no grupo da turma. Leva uma aula para começar e não depende da TI.</p>
+            <p class="lede" style="margin:0" data-lado="aluno">Você entra com o código que o professor mandar. Se a sua turma ainda não usa, deixe o e-mail e avisamos quando a entrada sem turma abrir.</p>
+          </div>
           <div class="stack" style="gap:10px; margin-top:22px">
             <p class="ui-body"><b>Gratuito na fase de piloto</b>, para aluno, professor e turma.</p>
             <p class="ui-body">Depois, cobrança por aluno em duas modalidades: plano individual, na faixa de R$ 19 a R$ 29 por mês, ou por turma, de R$ 8 a R$ 15 por aluno por semestre. São faixas em teste, e o que a disciplina exige do aluno não vira item pago.</p>
@@ -987,7 +1380,7 @@ printf("%d\n", soma);</div>
             </div>
           </div>
           <p class="form-msg" id="f-msg" role="status" aria-live="polite"></p>
-          <p class="note">Piloto em preparação: a inscrição fica guardada no seu navegador até a abertura das próximas turmas.</p>
+          <p class="note">Piloto em preparação: usamos o e-mail só para avisar quando a entrada abrir para a sua turma.</p>
         </form>
       </div>
     </div>
@@ -999,7 +1392,7 @@ printf("%d\n", soma);</div>
 <footer>
   <div class="wrap foot-in">
     <p><b style="color:var(--ink)">Analytics CS1</b> — turma virtual para disciplinas introdutórias de programação em C. Motor validado em 539 submissões reais.</p>
-    <p><a href="#problema">O problema</a> · <a href="#motor">Como funciona</a> · <a href="#calculadora">Calculadora</a> · <a href="#cadastro">Piloto</a></p>
+    <p><a href="#problema">O problema</a> · <a href="#motor">Como funciona</a> · <a href="#aluno" data-ir="aluno">Para o aluno</a> · <a href="#professor" data-ir="professor">Para o professor</a> · <a href="#cadastro">Piloto</a></p>
   </div>
 </footer>
 
@@ -1082,34 +1475,34 @@ printf("%d\n", soma);</div>
   pintarDemo(0);
 
   /* ---------- telas do protótipo ---------- */
-  const URLS = [
-    'analyticscs1.app/aluno/atividades/12/questoes/2',
-    'analyticscs1.app/aluno/progresso',
-    'analyticscs1.app/exam/12/questions/3'
-  ];
-  const telaTabs = Array.from(document.querySelectorAll('[id^="tb-"]'));
-  const telaPanes = Array.from(document.querySelectorAll('[id^="tp-"]'));
+  document.querySelectorAll('[data-telas]').forEach((grupo) => {
+    const tabs = Array.from(grupo.querySelectorAll('[role="tab"]'));
+    const panes = Array.from(grupo.querySelectorAll('[role="tabpanel"]'));
+    const url = grupo.querySelector('.frame-url');
+    if (!tabs.length) return;
 
-  function trocarTela(i) {
-    telaTabs.forEach((t, k) => {
-      t.setAttribute('aria-selected', String(k === i));
-      t.tabIndex = k === i ? 0 : -1;
+    function trocar(i) {
+      tabs.forEach((t, k) => {
+        t.setAttribute('aria-selected', String(k === i));
+        t.tabIndex = k === i ? 0 : -1;
+      });
+      panes.forEach((p, k) => { p.hidden = k !== i; });
+      if (url && tabs[i].dataset.url) url.textContent = tabs[i].dataset.url;
+    }
+
+    tabs.forEach((t, i) => {
+      t.type = 'button';
+      t.addEventListener('click', () => trocar(i));
+      t.addEventListener('keydown', (e) => {
+        if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+        e.preventDefault();
+        const prox = (i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length;
+        trocar(prox);
+        tabs[prox].focus();
+      });
     });
-    telaPanes.forEach((p, k) => { p.hidden = k !== i; });
-    el('frame-url').textContent = URLS[i];
-  }
-  telaTabs.forEach((t, i) => {
-    t.type = 'button';
-    t.addEventListener('click', () => trocarTela(i));
-    t.addEventListener('keydown', (e) => {
-      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
-      e.preventDefault();
-      const next = (i + (e.key === 'ArrowRight' ? 1 : telaTabs.length - 1)) % telaTabs.length;
-      trocarTela(next);
-      telaTabs[next].focus();
-    });
+    trocar(0);
   });
-  trocarTela(0);
 
   /* ---------- campo de 539 submissões ---------- */
   const TOTAL = 539, GRUPOS = 138;
@@ -1127,11 +1520,22 @@ printf("%d\n", soma);</div>
     ordem.slice(0, GRUPOS).forEach((i) => reps.add(i));
   })();
 
+  const comAnimacao = document.documentElement.getAttribute('data-anima') === 'on';
+  // Só o que é movimento de verdade depende desta pergunta. O surgir não depende.
+  const querMovimento = (function () {
+    try { return window.matchMedia('(prefers-reduced-motion: no-preference)').matches; }
+    catch (e) { return true; }
+  })();
+
   function campo(node, destacar) {
     const frag = document.createDocumentFragment();
     for (let i = 0; i < TOTAL; i++) {
       const d = document.createElement('i');
-      if (destacar) d.className = reps.has(i) ? 'rep' : 'hid';
+      if (destacar) {
+        d.className = reps.has(i) ? 'rep' : 'hid';
+        // Espalha o acender pelo campo, para virar onda e não estalo.
+        if (comAnimacao && querMovimento && reps.has(i)) d.style.transitionDelay = Math.round((i / TOTAL) * 900) + 'ms';
+      }
       frag.appendChild(d);
     }
     node.appendChild(frag);
@@ -1171,8 +1575,18 @@ printf("%d\n", soma);</div>
   calcular();
 
   /* ---------- lista do piloto ---------- */
+  /* O envio vai para um formulário do Google Forms. Os cinco valores abaixo saem do log de
+     criarFormularioPiloto, em formulario-piloto.gs. Enquanto estiverem vazios, o formulário
+     avisa que o envio não está ligado em vez de fingir que inscreveu alguém. */
+  const FORMS = {
+    acao: '',
+    campos: { nome: '', email: '', perfil: '', instituicao: '' }
+  };
+  const FORMS_PRONTO = !!(FORMS.acao && FORMS.campos.nome && FORMS.campos.email);
+
   const form = el('signup'), msg = el('f-msg'), botao = el('f-submit'), grade = form.querySelector('.form-grid');
   const CHAVE = 'analytics-cs1:inscricao';
+  const ROTULO = botao.textContent;
 
   function confirmar(nome) {
     grade.hidden = true;
@@ -1180,9 +1594,15 @@ printf("%d\n", soma);</div>
     msg.textContent = 'Pronto, ' + nome.split(' ')[0] + '. Você está na lista: avisamos assim que o piloto abrir para a sua turma.';
   }
 
+  function recusar(texto, foco) {
+    msg.className = 'form-msg err';
+    msg.textContent = texto;
+    if (foco) el(foco).focus();
+  }
+
   try {
     const salvo = JSON.parse(localStorage.getItem(CHAVE) || 'null');
-    if (salvo && salvo.nome) confirmar(salvo.nome);
+    if (salvo && salvo.nome && salvo.enviado) confirmar(salvo.nome);
   } catch (e) { /* navegador sem armazenamento: o formulário continua em branco */ }
 
   form.addEventListener('submit', (e) => {
@@ -1190,8 +1610,10 @@ printf("%d\n", soma);</div>
     const nome = el('f-nome').value.trim();
     const email = el('f-email').value.trim();
     msg.className = 'form-msg';
-    if (nome.length < 2) { msg.classList.add('err'); msg.textContent = 'Escreva seu nome para continuarmos.'; el('f-nome').focus(); return; }
-    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { msg.classList.add('err'); msg.textContent = 'Confira o e-mail: faltou o @ ou o domínio.'; el('f-email').focus(); return; }
+    msg.textContent = '';
+    if (nome.length < 2) return recusar('Escreva seu nome para continuarmos.', 'f-nome');
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return recusar('Confira o e-mail: faltou o @ ou o domínio.', 'f-email');
+    if (!FORMS_PRONTO) return recusar('A lista ainda não está recebendo inscrições por aqui. Escreva para otavio.r.oliveira04@gmail.com que eu te coloco nela.');
 
     const inscricao = {
       nome: nome,
@@ -1200,9 +1622,143 @@ printf("%d\n", soma);</div>
       instituicao: el('f-inst').value.trim(),
       registrado_em: new Date().toISOString()
     };
-    try { localStorage.setItem(CHAVE, JSON.stringify(inscricao)); } catch (err) { /* segue sem guardar */ }
-    confirmar(nome);
+
+    /* URLSearchParams manda como application/x-www-form-urlencoded, que é o formato
+       que o formResponse do Google espera de um formulário HTML comum. */
+    const dados = new URLSearchParams();
+    dados.append(FORMS.campos.nome, inscricao.nome);
+    dados.append(FORMS.campos.email, inscricao.email);
+    if (FORMS.campos.perfil) dados.append(FORMS.campos.perfil, inscricao.perfil);
+    if (FORMS.campos.instituicao && inscricao.instituicao) dados.append(FORMS.campos.instituicao, inscricao.instituicao);
+
+    botao.disabled = true;
+    botao.textContent = 'Enviando...';
+
+    /* O Google Forms não devolve cabeçalho de CORS, então a resposta é opaca: dá para saber
+       que a requisição saiu, não o que o Google respondeu. Só uma falha de rede cai no catch. */
+    fetch(FORMS.acao, { method: 'POST', mode: 'no-cors', body: dados })
+      .then(() => {
+        try { localStorage.setItem(CHAVE, JSON.stringify(Object.assign({ enviado: true }, inscricao))); } catch (err) { /* segue sem guardar */ }
+        confirmar(nome);
+      })
+      .catch(() => {
+        botao.disabled = false;
+        botao.textContent = ROTULO;
+        recusar('Não conseguimos enviar agora. Confira a conexão e tente de novo.');
+      });
   });
+
+  /* ---------- trilhas do professor e do aluno ---------- */
+  const raizTrilha = document.documentElement, CHAVE_TRILHA = 'analytics-cs1:trilha';
+  const botoesTrilha = Array.from(document.querySelectorAll('.trilhas button[data-trilha]'));
+
+  let tempoTroca;
+
+  function aplicarTrilha(lado, guardar) {
+    if (lado !== 'aluno' && lado !== 'professor') lado = 'professor';
+    const mudou = raizTrilha.getAttribute('data-trilha') !== lado;
+    raizTrilha.setAttribute('data-trilha', lado);
+
+    if (guardar && mudou) {
+      raizTrilha.classList.add('em-troca');
+      clearTimeout(tempoTroca);
+      tempoTroca = setTimeout(() => raizTrilha.classList.remove('em-troca'), 560);
+    }
+    botoesTrilha.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.trilha === lado)));
+
+    // O formulário já chega com o perfil da trilha, até a pessoa escolher outro.
+    const perfil = el('f-perfil');
+    if (perfil && !perfil.dataset.tocado) {
+      perfil.value = lado === 'aluno' ? 'Aluno de CS1' : 'Professor da disciplina';
+    }
+
+    if (!guardar) return;
+    try { localStorage.setItem(CHAVE_TRILHA, lado); } catch (e) { /* segue sem guardar */ }
+    try {
+      const u = new URL(window.location.href);
+      u.searchParams.set('trilha', lado);
+      history.replaceState(null, '', u);
+    } catch (e) { /* em file:// o navegador não deixa reescrever a URL */ }
+  }
+
+  botoesTrilha.forEach((b) => b.addEventListener('click', () => aplicarTrilha(b.dataset.trilha, true)));
+  document.querySelectorAll('[data-ir]').forEach((a) => {
+    a.addEventListener('click', () => aplicarTrilha(a.dataset.ir, true));
+  });
+  const perfilCampo = el('f-perfil');
+  if (perfilCampo) perfilCampo.addEventListener('change', () => { perfilCampo.dataset.tocado = '1'; });
+
+  aplicarTrilha(raizTrilha.getAttribute('data-trilha'), false);
+
+  /* ---------- entradas ligadas à rolagem ---------- */
+  // Se qualquer coisa aqui falhar, o atributo sai e o CSS devolve a página inteira visível.
+  try { if (comAnimacao) {
+    const AGRUPADOS = '.stats, .grid-2, .grid-3, .passos, .quotes';
+
+    let algumRevelado = false;
+
+    const observador = new IntersectionObserver((entradas) => {
+      entradas.forEach((entrada) => {
+        if (!entrada.isIntersecting) return;
+        algumRevelado = true;
+        const no = entrada.target;
+        no.classList.add('vis');
+        observador.unobserve(no);
+        if (no.classList.contains('stat') && querMovimento) contar(no);
+        if (no.classList.contains('calc')) {
+          no.querySelectorAll('.res-bar').forEach((b) => b.classList.remove('zerada'));
+        }
+      });
+    }, { threshold: 0, rootMargin: '0px 0px -12% 0px' });
+
+    function marcar(no, atraso) {
+      no.classList.add('revela');
+      if (atraso) no.style.transitionDelay = atraso + 'ms';
+      observador.observe(no);
+    }
+
+    document.querySelectorAll('section.wrap:not(.hero), .band > .wrap').forEach((area) => {
+      Array.from(area.children).forEach((filho, i) => {
+        if (filho.matches(AGRUPADOS)) {
+          Array.from(filho.children).forEach((neto, j) => marcar(neto, j * 90));
+        } else {
+          marcar(filho, Math.min(i, 3) * 70);
+        }
+      });
+    });
+
+    // Os números da faixa de validação sobem até o valor real.
+    function contar(cartao) {
+      const alvo = cartao.querySelector('.stat-v');
+      if (!alvo) return;
+      const texto = alvo.textContent.trim();
+      const partes = texto.match(/^(\D*)([\d.,]+)(\D*)$/);
+      if (!partes) return;
+      const bruto = partes[2].replace(/\./g, '').replace(',', '.');
+      const fim = parseFloat(bruto);
+      if (!isFinite(fim)) return;
+      const casas = (partes[2].split(',')[1] || '').length;
+      const inicio = performance.now(), duracao = 1100;
+      (function passo(agora) {
+        const t = Math.min(1, (agora - inicio) / duracao);
+        const v = fim * (1 - Math.pow(1 - t, 3));
+        alvo.textContent = partes[1] +
+          v.toLocaleString('pt-BR', { minimumFractionDigits: casas, maximumFractionDigits: casas }) +
+          partes[3];
+        if (t < 1) requestAnimationFrame(passo); else alvo.textContent = texto;
+      })(inicio);
+    }
+
+    document.querySelectorAll('.res-bar').forEach((b) => b.classList.add('zerada'));
+
+    // Se em 3 segundos nada foi revelado, o observador não está funcionando neste
+    // navegador. Tira o atributo e a página inteira volta a aparecer.
+    setTimeout(() => {
+      if (!algumRevelado) document.documentElement.removeAttribute('data-anima');
+    }, 3000);
+  } } catch (erro) {
+    document.documentElement.removeAttribute('data-anima');
+  }
 
   /* ---------- tema claro e escuro ---------- */
   const raiz = document.documentElement, btnTema = el('tema'), CHAVE_TEMA = 'analytics-cs1:tema';
