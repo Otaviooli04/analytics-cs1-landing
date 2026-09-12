@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Turma virtual para disciplinas introdutorias de programacao em C. O aluno envia o codigo e recebe o nome do erro, a causa e o que fazer. O professor recebe a mesma turma agrupada por dificuldade.">
+<meta name="description" content="Turma virtual para disciplinas introdutórias de programação em C. O aluno envia o código e recebe o nome do erro, a causa e o que fazer para corrigir. O professor recebe a turma separada em grupos: quem errou do mesmo jeito aparece junto.">
 <meta name="theme-color" content="#7c3aed">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Analytics CS1 - errar e entender por que">
-<meta property="og:description" content="O corretor da disciplina devolve nao passou nos testes. Nos devolvemos a causa do erro e o que fazer para corrigir, e do outro lado a turma inteira agrupada por dificuldade.">
+<meta property="og:description" content="O corretor da disciplina devolve só que não passou nos testes. Nós devolvemos a causa do erro e o que fazer para corrigir, e do outro lado a turma separada em grupos de quem errou do mesmo jeito.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%2232%22%20y2%3D%2232%22%20gradientUnits%3D%22userSpaceOnUse%22%3E%3Cstop%20stop-color%3D%22%238b5cf6%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%236d28d9%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%2232%22%20height%3D%2232%22%20rx%3D%228%22%20fill%3D%22url%28%23g%29%22%2F%3E%3Cg%20fill%3D%22%23fff%22%3E%3Crect%20x%3D%227%22%20y%3D%2217%22%20width%3D%224.2%22%20height%3D%229%22%20rx%3D%222.1%22%2F%3E%3Crect%20x%3D%2213.9%22%20y%3D%2212%22%20width%3D%224.2%22%20height%3D%2214%22%20rx%3D%222.1%22%2F%3E%3Crect%20x%3D%2220.8%22%20y%3D%227%22%20width%3D%224.2%22%20height%3D%2219%22%20rx%3D%222.1%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E">
 <script>
   // Aplica o tema e a trilha antes da primeira pintura, para nao piscar.
@@ -584,7 +584,7 @@ footer a{color:var(--ink-2)}
   </div>
 
   <h1>Errar e<br>entender <em>por quê</em>.</h1>
-  <p class="hero-sub" data-lado="professor">O seu aluno envia o código e descobre na hora qual foi o erro, por que ele acontece e o que fazer para corrigir. Da mesma correção, você recebe a turma inteira já agrupada por dificuldade.</p>
+  <p class="hero-sub" data-lado="professor">O seu aluno envia o código e descobre na hora qual foi o erro, por que ele acontece e o que fazer para corrigir. Da mesma correção, você recebe a turma separada em grupos: quem errou do mesmo jeito aparece junto.</p>
   <p class="hero-sub" data-lado="aluno">Você envia o código e descobre na hora qual foi o erro, por que ele acontece e o que fazer para corrigir, em vez de esperar dias pela correção para saber onde travou.</p>
 
   <div class="hero-cta">
@@ -592,7 +592,7 @@ footer a{color:var(--ink-2)}
     <a class="btn btn--lg" href="#cadastro" data-lado="aluno">Entrar na lista do piloto</a>
     <a class="btn btn--ghost btn--lg" href="#diagnostico">Ver um diagnóstico real</a>
   </div>
-  <p class="hero-meta">Gratuito na fase de piloto · roda no navegador, sem instalar compilador, IDE ou container</p>
+  <p class="hero-meta">Gratuito na fase de piloto · roda no navegador, sem instalar nada na máquina</p>
 
   <div class="split">
     <article class="panel">
@@ -622,7 +622,7 @@ Resultado <span class="c-fail">incorreto</span></div>
         </div>
         <div class="callout callout--accent">
           <p class="callout-t">O ERRO TEM NOME</p>
-          <p class="callout-b">A mesma categoria entra no painel de erros recorrentes do aluno e no mapa da turma que o professor enxerga.</p>
+          <p class="callout-b">O mesmo tipo de erro entra no painel de erros que o aluno repete e no mapa da turma que o professor enxerga.</p>
         </div>
       </div>
     </article>
@@ -631,12 +631,12 @@ Resultado <span class="c-fail">incorreto</span></div>
 
 <section class="wrap" style="padding-bottom:clamp(40px,6vw,72px)">
   <div class="stats">
-    <div class="stat"><p class="stat-v">539</p><p class="stat-l">submissões reais de 4 turmas corrigidas pelo motor</p></div>
+    <div class="stat"><p class="stat-v">539</p><p class="stat-l">códigos de alunos, de 4 turmas, corrigidos e conferidos um a um</p></div>
     <div class="stat"><p class="stat-v">99,6%</p><p class="stat-l">de concordância com o corretor já usado na disciplina</p></div>
-    <div class="stat"><p class="stat-v">3,9×</p><p class="stat-l">menos códigos para o professor ler, por agrupamento</p></div>
-    <div class="stat"><p class="stat-v">27</p><p class="stat-l">categorias de erro, cada uma rastreável até a regra</p></div>
+    <div class="stat"><p class="stat-v">3,9×</p><p class="stat-l">menos códigos para o professor ler, porque erros iguais viram um grupo só</p></div>
+    <div class="stat"><p class="stat-v">27</p><p class="stat-l">tipos de erro reconhecidos, cada um com uma regra escrita por trás</p></div>
   </div>
-  <p class="note" style="margin-top:14px">Números medidos na validação do motor contra 539 submissões reais de C, comparadas ao corretor já usado na disciplina. Não são projeções.</p>
+  <p class="note" style="margin-top:14px">Números medidos na validação do corretor contra 539 códigos reais de alunos, comparados ao corretor já usado na disciplina. Não são projeções.</p>
 </section>
 
 <section id="problema" class="band">
@@ -736,7 +736,7 @@ Resultado <span class="c-fail">incorreto</span></div>
 
     <div class="figbox" style="margin-top:32px">
       <figure class="figure">
-        <svg viewBox="0 0 900 218" role="img" aria-label="Uma correção alimenta dois ciclos: o do aluno, que envia o código, recebe categoria, causa e correção e tenta de novo, e o do professor, que recebe a turma agrupada por falha, lê um código representativo por grupo e devolve um retorno por grupo.">
+        <svg viewBox="0 0 900 218" role="img" aria-label="Uma correção alimenta dois ciclos: o do aluno, que envia o código, recebe o tipo do erro, a causa e a correção e tenta de novo, e o do professor, que recebe a turma separada em grupos de quem errou do mesmo jeito, lê um código de exemplo por grupo e responde uma vez para o grupo inteiro.">
           <defs>
             <marker id="ar4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
               <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
@@ -759,7 +759,7 @@ Resultado <span class="c-fail">incorreto</span></div>
             <text x="102" y="74">Aluno envia o código</text>
             <text x="340" y="74">Motor de correção</text>
             <text x="590" y="74">O erro ganha nome</text>
-            <text x="785" y="178">Turma agrupada</text>
+            <text x="785" y="178">Turma em grupos</text>
             <text x="545" y="178">Um código por grupo</text>
             <text x="300" y="178">Retorno por grupo</text>
           </g>
@@ -788,7 +788,7 @@ Resultado <span class="c-fail">incorreto</span></div>
           <path d="M195 181 L103 181 L103 112" fill="none" stroke="var(--accent)" stroke-width="1.4" stroke-dasharray="4 4" marker-end="url(#ar5)"/>
           <text x="103" y="205" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--accent)" text-anchor="middle">o aluno recebe o retorno</text>
         </svg>
-        <figcaption>Uma correção, dois destinos. Para o aluno ela vira diagnóstico e caminho de conserto. Para o professor ela vira o agrupamento da turma por assinatura de falha. Nada é corrigido duas vezes e nada é estimado por amostragem.</figcaption>
+        <figcaption>Uma correção, dois destinos. Para o aluno ela vira diagnóstico e caminho de conserto. Para o professor ela junta num grupo só todo mundo que errou do mesmo jeito. Nada é corrigido duas vezes e nenhum código fica de fora.</figcaption>
       </figure>
     </div>
 
@@ -796,12 +796,12 @@ Resultado <span class="c-fail">incorreto</span></div>
       <div class="card" data-persona="aluno">
         <span class="badge badge--accent">Para o aluno</span>
         <h3 style="margin-top:14px">O erro passa a ter nome</h3>
-        <p>Cada envio volta com a categoria do erro, a causa e o que fazer para corrigir. No modo treino as tentativas são ilimitadas, e o painel mostra o padrão que você repete sem perceber.</p>
+        <p>Cada envio volta com o tipo do erro, a causa e o que fazer para corrigir. No modo treino as tentativas são ilimitadas, e o painel mostra o padrão que você repete sem perceber.</p>
       </div>
       <div class="card" data-persona="professor">
         <span class="badge badge--accent">Para o professor</span>
         <h3 style="margin-top:14px">Uma intervenção por dificuldade</h3>
-        <p>Suba o arquivo da prova e receba as questões e os casos de teste prontos. As submissões chegam agrupadas por assinatura de falha, e você responde ao grupo inteiro de uma vez.</p>
+        <p>Suba o arquivo da prova e receba as questões e os casos de teste prontos. Os envios chegam separados por tipo de erro, e você responde ao grupo inteiro de uma vez.</p>
       </div>
       <div class="card" data-persona="coordenacao">
         <span class="badge badge--accent">Para a coordenação</span>
@@ -814,13 +814,13 @@ Resultado <span class="c-fail">incorreto</span></div>
 
 <section id="motor" class="band">
   <div class="wrap">
-    <p class="eyebrow">// como funciona <span>— o motor por dentro</span></p>
-    <h2 class="section-h">Um funil determinístico.<br>A IA explica, nunca decide a nota.</h2>
-    <p class="lede">Todo veredito é rastreável até a regra que o produziu. É o que sustenta a confiança do professor em expor a turma ao sistema, e é a diferença entre um diagnóstico e um palpite bem escrito.</p>
+    <p class="eyebrow">// como funciona <span>— por dentro da correção</span></p>
+    <h2 class="section-h">Quem corrige são regras escritas.<br>A IA explica, nunca decide a nota.</h2>
+    <p class="lede">Atrás de cada diagnóstico existe uma regra escrita, e dá para ver qual foi. É o que sustenta a confiança do professor em expor a turma ao sistema, e é a diferença entre um diagnóstico e um palpite bem escrito.</p>
 
     <div class="figbox" style="margin-top:32px">
       <figure class="figure">
-        <svg viewBox="0 0 900 250" role="img" aria-label="Funil de correção: o código C do aluno passa por análise estática e por execução isolada em container, os sinais das duas entram nas heurísticas pedagógicas, que produzem o diagnóstico em 27 categorias. A IA generativa só escreve a explicação a partir do diagnóstico pronto.">
+        <svg viewBox="0 0 900 250" role="img" aria-label="Caminho da correção: o código C do aluno é lido sem ser executado e também compilado e rodado numa caixa fechada. O que sai das duas etapas entra nas regras pedagógicas, que produzem o diagnóstico em 27 tipos de erro. A IA generativa só escreve a explicação a partir do diagnóstico pronto.">
           <defs>
             <marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
               <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
@@ -841,15 +841,15 @@ Resultado <span class="c-fail">incorreto</span></div>
 
           <g font-family="IBM Plex Sans, sans-serif" font-size="12.5" fill="currentColor" text-anchor="middle">
             <text x="75" y="120">Código C</text>
-            <text x="310" y="62">Análise estática</text>
-            <text x="310" y="178">Execução isolada</text>
-            <text x="575" y="120">Heurísticas pedagógicas</text>
+            <text x="310" y="62">Leitura do código</text>
+            <text x="310" y="178">Compila e executa</text>
+            <text x="575" y="120">Regras pedagógicas</text>
             <text x="810" y="120">Diagnóstico</text>
           </g>
           <g font-family="IBM Plex Mono, monospace" font-size="10" fill="currentColor" fill-opacity=".65" text-anchor="middle">
             <text x="75" y="138">do aluno</text>
-            <text x="310" y="80">tree-sitter · estruturas e funções</text>
-            <text x="310" y="196">gcc isolado · sem rede · timeout</text>
+            <text x="310" y="80">sem rodar nada · estruturas e funções usadas</text>
+            <text x="310" y="196">em caixa fechada · sem rede · com tempo limitado</text>
             <text x="575" y="138">27 regras, da mais grave à mais rasa</text>
           </g>
           <text x="810" y="138" font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--accent)" text-anchor="middle">causa + o que fazer</text>
@@ -865,22 +865,22 @@ Resultado <span class="c-fail">incorreto</span></div>
           </g>
           <path d="M810 154 L810 192" fill="none" stroke="var(--accent)" stroke-width="1.4" stroke-dasharray="4 4" marker-end="url(#ar3)"/>
         </svg>
-        <figcaption>A nota e a categoria saem das regras, não do modelo de linguagem. O modelo entra depois do veredito pronto, e só para transformá-lo em uma explicação sobre o código daquele aluno, quando ele pede.</figcaption>
+        <figcaption>A nota e o tipo do erro saem das regras, não da IA. A IA entra depois do resultado pronto, e só para transformá-lo em uma explicação sobre o código daquele aluno, quando ele pede.</figcaption>
       </figure>
     </div>
 
     <div class="grid-3" style="margin-top:24px">
       <div class="card">
         <h3>Adaptativo por questão</h3>
-        <p>Não existem “modos de correção”. Cada questão declara o que exige, como recursão, ponteiro ou um laço proibido, e só os verificadores relevantes disparam.</p>
+        <p>Não existe um modo de correção para escolher. Cada questão diz o que exige, como recursão, ponteiro ou um laço proibido, e o sistema cobra só o que aquela questão pediu.</p>
       </div>
       <div class="card">
         <h3>Execução segura</h3>
-        <p>Cada submissão compila e roda em container isolado, sem rede e com tempo limitado. O código do aluno nunca toca a máquina de ninguém.</p>
+        <p>Cada envio compila e roda numa caixa fechada, sem acesso à internet e com tempo limitado. O código do aluno nunca toca a máquina de ninguém.</p>
       </div>
       <div class="card">
         <h3>Sem instalar nada</h3>
-        <p>Aluno e professor usam pelo navegador. Nenhum compilador, IDE ou container na máquina, e nada de laboratório novo para a instituição.</p>
+        <p>Aluno e professor usam pelo navegador. Nada para instalar na máquina, e nada de laboratório novo para a instituição.</p>
       </div>
     </div>
   </div>
@@ -890,9 +890,9 @@ Resultado <span class="c-fail">incorreto</span></div>
   <div class="wrap">
     <p class="eyebrow">// ferramenta interativa <span>— diagnóstico ao vivo</span></p>
     <h2 class="section-h">Escolha um erro. Veja os dois retornos.</h2>
-    <p class="lede">Três submissões de C que qualquer turma de CS1 produz na primeira semana. À esquerda, o código enviado. À direita, o que o corretor comum devolve e o que o Analytics CS1 devolve no mesmo instante.</p>
+    <p class="lede">Três códigos em C que qualquer turma de primeiro período produz na primeira semana. À esquerda, o código enviado. À direita, o que o corretor comum devolve e o que o Analytics CS1 devolve no mesmo instante.</p>
 
-    <div class="tabs" role="tablist" aria-label="Exemplos de submissão" style="margin-top:28px" id="demo-tabs"></div>
+    <div class="tabs" role="tablist" aria-label="Exemplos de código enviado" style="margin-top:28px" id="demo-tabs"></div>
 
     <div class="grid-2" id="demo-body">
       <article class="panel">
@@ -928,7 +928,7 @@ Resultado <span class="c-fail">incorreto</span></div>
         </article>
       </div>
     </div>
-    <p class="note" style="margin-top:16px">Os textos do diagnóstico são os que o motor gera de verdade para essas categorias, palavra por palavra.</p>
+    <p class="note" style="margin-top:16px">Os textos do diagnóstico são os que o sistema gera de verdade para esses tipos de erro, palavra por palavra.</p>
   </div>
 </section>
 
@@ -947,17 +947,17 @@ Resultado <span class="c-fail">incorreto</span></div>
       <li class="passo">
         <p class="passo-n">passo 2</p>
         <h3>Resolva pelo navegador</h3>
-        <p>Escreva o C na própria página, sem compilador nem IDE na máquina. No modo treino as tentativas são ilimitadas. No modo prova valem a janela e o limite que o professor definiu.</p>
+        <p>Escreva o C na própria página, sem instalar compilador nem editor de código. No modo treino as tentativas são ilimitadas. No modo prova valem a janela e o limite que o professor definiu.</p>
       </li>
       <li class="passo">
         <p class="passo-n">passo 3</p>
         <h3>Receba o erro com nome</h3>
-        <p>A resposta traz a categoria do erro, a causa em português, a linha culpada e o que fazer. Se ainda não ficou claro, o botão “explicar meu erro” escreve a explicação sobre o seu código.</p>
+        <p>A resposta traz o tipo do erro, a causa em português, a linha onde ele está e o que fazer. Se ainda não ficou claro, o botão “explicar meu erro” escreve a explicação sobre o seu código.</p>
       </li>
       <li class="passo">
         <p class="passo-n">passo 4</p>
         <h3>Veja o que você repete</h3>
-        <p>O histórico guarda todas as tentativas e o painel junta os erros por categoria, mostrando o que está melhorando e o que voltou a aparecer nas últimas semanas.</p>
+        <p>O histórico guarda todas as tentativas e o painel junta os erros por tipo, mostrando o que está melhorando e o que voltou a aparecer nas últimas semanas.</p>
       </li>
     </ol>
 
@@ -1062,7 +1062,7 @@ printf("%d\n", soma);</div>
       </div>
       <div class="card">
         <h3>O mesmo diagnóstico durante o semestre inteiro</h3>
-        <p>As categorias são as mesmas na lista de exercícios e na prova, então o erro que você viu na segunda semana tem o mesmo nome quando reaparece na avaliação.</p>
+        <p>Os tipos de erro são os mesmos na lista de exercícios e na prova, então o erro que você viu na segunda semana tem o mesmo nome quando reaparece na avaliação.</p>
       </div>
     </div>
 
@@ -1074,7 +1074,7 @@ printf("%d\n", soma);</div>
   <div class="wrap">
     <p class="eyebrow">// para o professor <span>— do arquivo da prova à intervenção</span></p>
     <h2 class="section-h">Você lê 138 códigos, não 539.</h2>
-    <p class="lede">O agrupamento não amostra nem descarta nada, porque todas as submissões continuam corrigidas uma a uma. O que muda é quantos códigos você precisa abrir para entender a turma inteira. Quem erra do mesmo jeito cai no mesmo grupo, e a intervenção sai uma vez por dificuldade.</p>
+    <p class="lede">Nenhum código deixa de ser corrigido e nada é decidido por amostra: todos continuam sendo corrigidos um a um. O que muda é quantos você precisa abrir para entender a turma inteira. Quem erra do mesmo jeito cai no mesmo grupo, e você responde uma vez para o grupo inteiro.</p>
 
     <ol class="passos" style="margin-top:32px">
       <li class="passo">
@@ -1090,7 +1090,7 @@ printf("%d\n", soma);</div>
       <li class="passo">
         <p class="passo-n">passo 3</p>
         <h3>Receba a turma agrupada</h3>
-        <p>As submissões chegam separadas por assinatura de falha. Cada grupo mostra o código representativo, as linhas culpadas e a lista de quem está nele, então o veredito da máquina fica exposto para você conferir.</p>
+        <p>Os envios chegam separados por tipo de erro. Cada grupo mostra um código de exemplo, as linhas onde o erro está e a lista de quem caiu ali, então a decisão do sistema fica à vista para você conferir.</p>
       </li>
       <li class="passo">
         <p class="passo-n">passo 4</p>
@@ -1103,21 +1103,21 @@ printf("%d\n", soma);</div>
       <figure class="figure">
         <div class="grid-2" style="gap:28px">
           <div>
-            <div class="dg-head"><b>Sem agrupamento</b><span>539 códigos para ler</span></div>
+            <div class="dg-head"><b>Um a um</b><span>539 códigos para ler</span></div>
             <div class="dots" id="dots-a" aria-hidden="true"></div>
           </div>
           <div>
-            <div class="dg-head"><b>Com agrupamento</b><span>138 códigos representativos</span></div>
+            <div class="dg-head"><b>Em grupos</b><span>138 códigos de exemplo</span></div>
             <div class="dots" id="dots-b" aria-hidden="true"></div>
           </div>
         </div>
-        <figcaption>Cada quadrado é uma submissão real do conjunto de validação. À direita, os 138 destacados são os códigos que o professor abre, um por assinatura de falha. Os demais recebem a mesma resposta, porque falharam do mesmo jeito. Redução medida: 3,91×.</figcaption>
+        <figcaption>Cada quadrado é um código real, dos 539 que usamos para validar o sistema. À direita, os 138 destacados são os que o professor abre, um para cada tipo de erro. Os outros recebem a mesma resposta, porque falharam do mesmo jeito. Redução medida: 3,91×.</figcaption>
       </figure>
     </div>
 
     <div class="telas" data-telas style="margin-top:28px">
       <div class="tabs" role="tablist" aria-label="Telas do professor">
-        <button class="tab" role="tab" id="tb-p1" aria-controls="tp-p1" aria-selected="true" data-url="analyticscs1.app/exam/12/questions/3">Grupos de dificuldade</button>
+        <button class="tab" role="tab" id="tb-p1" aria-controls="tp-p1" aria-selected="true" data-url="analyticscs1.app/exam/12/questions/3">Grupos por tipo de erro</button>
         <button class="tab" role="tab" id="tb-p2" aria-controls="tp-p2" aria-selected="false" data-url="analyticscs1.app/exam/novo">Montagem da prova</button>
       </div>
 
@@ -1130,19 +1130,19 @@ printf("%d\n", soma);</div>
         <div class="screen" role="tabpanel" id="tp-p1" aria-labelledby="tb-p1">
           <div class="ui-nav"><b>Analytics CS1</b><span class="ui-link">Turmas</span><span class="ui-link on">Prova 1 · Questão 3</span><span class="ui-spread">Prof. Ricardo</span></div>
           <div class="ui-row">
-            <h4 style="font-size:19px; font-weight:600">Grupos de dificuldade</h4>
-            <span class="ui-spread">6 grupos em 58 submissões</span>
+            <h4 style="font-size:19px; font-weight:600">Grupos por tipo de erro</h4>
+            <span class="ui-spread">6 grupos em 58 envios</span>
           </div>
           <div class="ui-card">
             <div class="ui-row" style="margin-bottom:10px">
               <span class="dot" style="background:#7c3aed"></span><span class="badge badge--fail">Acesso Fora dos Limites: Off-by-One</span>
               <span class="ui-sub">· falha no teste 2</span><span class="ui-spread">19 alunos · 33%</span>
             </div>
-            <p class="ui-body" style="border-left:2px solid var(--accent-line); padding-left:12px">Este grupo percorre o vetor até <code>i &lt;= n</code> e lê uma posição além do fim. Vale retomar em aula que os índices vão de 0 a n−1, usando o próprio código representativo abaixo.</p>
+            <p class="ui-body" style="border-left:2px solid var(--accent-line); padding-left:12px">Este grupo percorre o vetor até <code>i &lt;= n</code> e lê uma posição além do fim. Vale retomar em aula que os índices vão de 0 a n−1, usando o próprio código de exemplo abaixo.</p>
             <div class="ui-row" style="margin-top:12px">
               <span class="chip">2023001</span><span class="chip">2023014</span><span class="chip">2023022</span><span class="chip">2023031</span><span class="chip">+15</span>
             </div>
-            <p class="ui-sub" style="margin-top:10px">+ Ver código representativo <span style="color:var(--fail)">· linha 7 em destaque</span></p>
+            <p class="ui-sub" style="margin-top:10px">+ Ver código de exemplo <span style="color:var(--fail)">· linha 7 em destaque</span></p>
           </div>
           <div class="ui-card">
             <div class="ui-row" style="margin-bottom:10px">
@@ -1193,7 +1193,7 @@ printf("%d\n", soma);</div>
         </div>
       </div>
     </div>
-    <p class="note" style="margin-top:16px">Telas do protótipo em funcionamento, com dados de exemplo. O agrupamento e o diagnóstico são os mesmos validados nas 539 submissões reais.</p>
+    <p class="note" style="margin-top:16px">Telas do protótipo em funcionamento, com dados de exemplo. Os grupos e o diagnóstico são os mesmos validados nos 539 códigos reais.</p>
 
     <p class="troca">Faz a disciplina como aluno? <button type="button" data-ir="aluno">Ver a trilha do aluno</button></p>
   </div>
@@ -1203,7 +1203,7 @@ printf("%d\n", soma);</div>
   <div class="wrap">
     <p class="eyebrow">// ferramenta interativa <span>— calculadora de esforço</span></p>
     <h2 class="section-h">Quanto da sua correção volta para você.</h2>
-    <p class="lede">Ajuste os números da sua turma e veja a conta. O fator de agrupamento é o medido na validação, 3,91×, e vale para turmas cujas falhas se repetem, que é o caso de toda turma de CS1.</p>
+    <p class="lede">Ajuste os números da sua turma e veja a conta. A redução de 3,91× é a que medimos na validação, e vale para turmas em que os erros se repetem, que é o caso de toda turma de primeiro período.</p>
 
     <div class="figbox calc" style="margin-top:32px">
       <form id="calc" aria-label="Calculadora de esforço de correção">
@@ -1285,7 +1285,7 @@ printf("%d\n", soma);</div>
             <td class="us"><span class="mk mk--p">●</span></td>
           </tr>
           <tr>
-            <th scope="row">Agrupa a turma por dificuldade</th>
+            <th scope="row">Junta quem errou do mesmo jeito</th>
             <td><span class="mk mk--n">○</span></td><td><span class="mk mk--n">○</span></td><td><span class="mk mk--n">○</span></td><td><span class="mk mk--n">○</span></td>
             <td class="us"><span class="mk mk--p">●</span></td>
           </tr>
@@ -1295,7 +1295,7 @@ printf("%d\n", soma);</div>
             <td class="us"><span class="mk mk--p">●</span></td>
           </tr>
           <tr>
-            <th scope="row">Veredito auditável até a regra</th>
+            <th scope="row">Mostra a regra por trás do resultado</th>
             <td><span class="mk mk--y">●</span></td><td><span class="mk mk--y">●</span></td><td><span class="mk mk--n">○</span></td><td><span class="mk mk--y">●</span></td>
             <td class="us"><span class="mk mk--p">●</span></td>
           </tr>
@@ -1326,10 +1326,10 @@ printf("%d\n", soma);</div>
       <figure class="quote">
         <span class="badge badge--accent">sobre o retorno imediato</span>
         <blockquote>“Em vez de esperar dias pelo resultado para entender onde errou, você descobre a falha no momento da submissão e já recebe dicas de como corrigir.”</blockquote>
-        <cite><b>Aluna que estuda por exercício e gabarito</b>Única da amostra que declarou uso semanal, e disse o motivo sem ser perguntada.</cite>
+        <cite><b>Aluna que estuda por exercício e gabarito</b>Única das cinco que declarou uso semanal, e disse o motivo sem ser perguntada.</cite>
       </figure>
     </div>
-    <p class="note" style="margin-top:18px">Falas registradas nas entrevistas de Descoberta do Cliente, agosto de 2026. As conversas foram anônimas, por isso identificamos cada pessoa pelo perfil. Ainda não entrevistamos professores, e quando isso acontecer as falas deles entram aqui do mesmo jeito.</p>
+    <p class="note" style="margin-top:18px">Falas registradas nas primeiras entrevistas de campo, agosto de 2026. As conversas foram anônimas, por isso identificamos cada pessoa pelo perfil. Ainda não entrevistamos professores, e quando isso acontecer as falas deles entram aqui do mesmo jeito.</p>
   </div>
 </section>
 
@@ -1391,7 +1391,7 @@ printf("%d\n", soma);</div>
 
 <footer>
   <div class="wrap foot-in">
-    <p><b style="color:var(--ink)">Analytics CS1</b> — turma virtual para disciplinas introdutórias de programação em C. Motor validado em 539 submissões reais.</p>
+    <p><b style="color:var(--ink)">Analytics CS1</b> — turma virtual para disciplinas introdutórias de programação em C. Corretor validado em 539 códigos reais de alunos.</p>
     <p><a href="#problema">O problema</a> · <a href="#motor">Como funciona</a> · <a href="#aluno" data-ir="aluno">Para o aluno</a> · <a href="#professor" data-ir="professor">Para o professor</a> · <a href="#cadastro">Piloto</a></p>
   </div>
 </footer>
@@ -1561,7 +1561,7 @@ printf("%d\n", soma);</div>
     const hNow = subs * min / 60, hNew = itens * min / 60;
 
     el('calc-head').textContent = alunos + ' alunos × ' + questoes + ' questões = ' + subs.toLocaleString('pt-BR') +
-      ' submissões, que colapsam em ' + itens.toLocaleString('pt-BR') + ' códigos representativos.';
+      ' envios, que se reduzem a ' + itens.toLocaleString('pt-BR') + ' códigos para ler.';
     const bNow = el('bar-now'), bNew = el('bar-new');
     bNow.style.width = '100%';
     bNow.textContent = fmtH(hNow);

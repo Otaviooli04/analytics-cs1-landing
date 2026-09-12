@@ -128,6 +128,11 @@ Infográficos, que a mesma aula lista como material colateral no slide 19:
 
 ## Detalhes que valem saber antes de editar
 
+- **A página não usa o vocabulário interno do projeto.** Quem chega nela não sabe o que é
+  assinatura de falha, funil determinístico, heurística, container ou submissão. O texto diz
+  *tipo de erro*, *quem errou do mesmo jeito*, *regra escrita por trás*, *caixa fechada* e
+  *envio*. As duas exceções são deliberadas: os textos de diagnóstico, que são citação literal
+  do motor, e as falas das entrevistas, que são citação literal dos alunos.
 - **Os textos de diagnóstico são os reais**, copiados de `backend/app/engine/heuristics.py` do
   repositório do produto. Se as regras mudarem lá, vale atualizar aqui.
 - **A calculadora usa o fator 3,91×**, medido na validação sobre 539 submissões reais. A conta
