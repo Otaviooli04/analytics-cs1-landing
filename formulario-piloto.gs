@@ -20,10 +20,10 @@
 var TITULO = 'Analytics CS1 — lista do piloto';
 
 var DESCRICAO =
-  'O Analytics CS1 e uma turma virtual para disciplinas introdutorias de programacao em C: ' +
-  'o aluno entende por que o codigo falhou e o professor ve a turma agrupada por tipo de erro. ' +
+  'O Analytics CS1 é uma turma virtual para disciplinas introdutórias de programação em C: ' +
+  'o aluno entende por que o código falhou e o professor vê a turma agrupada por tipo de erro. ' +
   'Deixe seu contato que avisamos quando a entrada abrir para a sua turma. ' +
-  'O piloto e gratuito e o e-mail nao vai para mais nada.';
+  'O piloto é gratuito e o e-mail não vai para mais nada.';
 
 var PERFIS = [
   'Aluno de CS1',
@@ -37,7 +37,7 @@ function criarFormularioPiloto() {
   var form = FormApp.create(TITULO);
   form.setDescription(DESCRICAO);
   form.setCollectEmail(false);
-  form.setConfirmationMessage('Pronto. Voce esta na lista: avisamos assim que o piloto abrir para a sua turma.');
+  form.setConfirmationMessage('Pronto. Você está na lista: avisamos assim que o piloto abrir para a sua turma.');
   try {
     form.setRequireLogin(false);
   } catch (e) {
