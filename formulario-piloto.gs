@@ -79,10 +79,10 @@ function identificadores(form, nome, email, perfil, instituicao) {
   marcas['MARCA-INSTITUICAO'] = 'instituicao';
 
   var resposta = form.createResponse()
-    .withItemResponse(nome.asTextItem().createResponse('MARCA-NOME'))
-    .withItemResponse(email.asTextItem().createResponse('MARCA-EMAIL'))
-    .withItemResponse(perfil.asMultipleChoiceItem().createResponse(PERFIS[0]))
-    .withItemResponse(instituicao.asTextItem().createResponse('MARCA-INSTITUICAO'));
+    .withItemResponse(texto(nome).createResponse('MARCA-NOME'))
+    .withItemResponse(texto(email).createResponse('MARCA-EMAIL'))
+    .withItemResponse(escolha(perfil).createResponse(PERFIS[0]))
+    .withItemResponse(texto(instituicao).createResponse('MARCA-INSTITUICAO'));
 
   var url = resposta.toPrefilledUrl();
   var campos = { acao: url.split('?')[0].replace(/viewform.*$/, 'formResponse') };
@@ -96,6 +96,18 @@ function identificadores(form, nome, email, perfil, instituicao) {
     }
   }
   return campos;
+}
+
+/*
+ * addTextItem devolve um TextItem pronto, enquanto getItems devolve o Item generico,
+ * que so vira TextItem depois do asTextItem. Estas duas funcoes aceitam os dois.
+ */
+function texto(item) {
+  return typeof item.asTextItem === 'function' ? item.asTextItem() : item;
+}
+
+function escolha(item) {
+  return typeof item.asMultipleChoiceItem === 'function' ? item.asMultipleChoiceItem() : item;
 }
 
 function relatar(form, campos) {
